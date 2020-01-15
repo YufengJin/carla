@@ -171,86 +171,92 @@ _</font>
 ---
 
 ## carla.ActorList<a name="carla.ActorList"></a> <sub><sup>_class_</sup></sub>
-Class that provides access to actors.  
+A class that contains every actor present on the scene and provides acces to them.  
 
 <h3>Methods</h3>
 - <a name="carla.ActorList.find"></a>**<font color="#7fb800">find</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**actor_id**</font>)  
-Find an actor by ID.  
+Finds an actor using its identifier and returns it or <b>None</b> if it is not present.  
     - **Parameters:**
         - `actor_id` (_int_)  
 - <a name="carla.ActorList.filter"></a>**<font color="#7fb800">filter</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**wildcard_pattern**</font>)  
-Filters a list of Actors with type_id matching wildcard_pattern.  
+Filters a list of Actors matching `wildcard_pattern` against their variable **<font color="#f8805a">type_id</font>** (which identifies the blueprint used to spawn them). Matching follows [fnmatch](https://docs.python.org/2/library/fnmatch.html) standard.  
     - **Parameters:**
         - `wildcard_pattern` (_str_)  
-    - **Note:** <font color="#8E8E8E">_The wildcard_pattern follows Unix shell-style wildcards (fnmatch). 
-_</font>  
 - <a name="carla.ActorList.__getitem__"></a>**<font color="#7fb800">\__getitem__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**pos**</font>)  
+Returns the actor corresponding to `pos` position in the list.  
     - **Parameters:**
         - `pos` (_int_)  
 - <a name="carla.ActorList.__len__"></a>**<font color="#7fb800">\__len__</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the amount of actors listed.  
 - <a name="carla.ActorList.__iter__"></a>**<font color="#7fb800">\__iter__</font>**(<font color="#00a6ed">**self**</font>)  
+Allows the iteration for this object.  
 - <a name="carla.ActorList.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+Parses the information comprised for every actor and shows it on screen.  
 
 ---
 
 ## carla.ActorSnapshot<a name="carla.ActorSnapshot"></a> <sub><sup>_class_</sup></sub>
-Class that provides access to the data of a [carla.Actor](#carla.Actor) in a [carla.WorldSnapshot](#carla.WorldSnapshot).  
+A class containing all the information for an actor at a certain moment in time. These objects are contained in a [carla.WorldSnapshot](#carla.WorldSnapshot) and sent to the client once every tick.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.ActorSnapshot.id"></a>**<font color="#f8805a">id</font>** (_int_)  
-The ActorSnapshot's identifier.  
+An identifier for the snapshot itself.  
 
 <h3>Methods</h3>
-- <a name="carla.ActorSnapshot.get_transform"></a>**<font color="#7fb800">get_transform</font>**(<font color="#00a6ed">**self**</font>)  
-Returns the actor's current transform.  
-    - **Return:** _[carla.Transform](#carla.Transform)_  
-- <a name="carla.ActorSnapshot.get_velocity"></a>**<font color="#7fb800">get_velocity</font>**(<font color="#00a6ed">**self**</font>)  
-Returns the actor's current 3D velocity.  
+- <a name="carla.ActorSnapshot.__self__"></a>**<font color="#7fb800">\__self__</font>**(<font color="#00a6ed">**self**</font>)  
+- <a name="carla.ActorSnapshot.get_acceleration"></a>**<font color="#7fb800">get_acceleration</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the acceleration vector registered for an actor in that tick.  
     - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
 - <a name="carla.ActorSnapshot.get_angular_velocity"></a>**<font color="#7fb800">get_angular_velocity</font>**(<font color="#00a6ed">**self**</font>)  
-Returns the actor's current 3D angular velocity.  
+Returns the angular velocity vector registered for an actor in that tick.  
     - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
-- <a name="carla.ActorSnapshot.get_acceleration"></a>**<font color="#7fb800">get_acceleration</font>**(<font color="#00a6ed">**self**</font>)  
-Returns the actor's current 3D acceleration.  
+- <a name="carla.ActorSnapshot.get_transform"></a>**<font color="#7fb800">get_transform</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the actor's transform (location and rotation) for an actor in that tick.  
+    - **Return:** _[carla.Transform](#carla.Transform)_  
+- <a name="carla.ActorSnapshot.get_velocity"></a>**<font color="#7fb800">get_velocity</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the velocity vector registered for an actor in that tick.  
     - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
-- <a name="carla.ActorSnapshot.__self__"></a>**<font color="#7fb800">\__self__</font>**(<font color="#00a6ed">**self**</font>)  
 
 ---
 
 ## carla.AttachmentType<a name="carla.AttachmentType"></a> <sub><sup>_class_</sup></sub>
-Class that defines the attachment options. See [carla.World.spawn_actor](#carla.World.spawn_actor).<br> Check out this [`recipe`](../python_cookbook/#attach-sensors-recipe)!  
+Class that defines attachment options between an actor and its parent. When spawning actors, these can be attached to another actor so their position accordingly. This is specially useful for cameras and sensors. [Here](../python_cookbook/#attach-sensors-recipe) is a brief recipe in which we can see how sensors can be attached to a car when spawned.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.AttachmentType.Rigid"></a>**<font color="#f8805a">Rigid</font>**  
-Standard fixed attachment.  
+With this fixed attatchment the object follow its parent position strictly.  
 - <a name="carla.AttachmentType.SpringArm"></a>**<font color="#f8805a">SpringArm</font>**  
-Attachment that expands or retracts based on camera situation.  
+An attachment that expands or retracts depending on camera situation. SpringArms are an Unreal Engine component so [check this out](../python_cookbook/#attach-sensors-recipe) to learn some more about them.  
 
 ---
 
 ## carla.BlueprintLibrary<a name="carla.BlueprintLibrary"></a> <sub><sup>_class_</sup></sub>
-Class that provides access to [blueprints](../bp_library/).  
+A class that gives access to the blueprints provided for actor spawning and returns the [carla.Actorblueprint](#carla.Actorblueprint) that will be used for that. Each blueprint has an identifier and attributes that may or may not be modifiable depending on which. [Here](../bp_library/) is a reference containing every available blueprint and its specifics.  
 
 <h3>Methods</h3>
-- <a name="carla.BlueprintLibrary.find"></a>**<font color="#7fb800">find</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**id**</font>)  
-Returns a [carla.ActorBlueprint](#carla.ActorBlueprint) through its id.  
-    - **Parameters:**
-        - `id` (_str_)  
-    - **Return:** _[carla.ActorBlueprint](#carla.ActorBlueprint)_  
-- <a name="carla.BlueprintLibrary.filter"></a>**<font color="#7fb800">filter</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**wildcard_pattern**</font>)  
-Filters a list of ActorBlueprint with id or tags matching wildcard_pattern. The pattern is matched against each blueprint's id and tags.  
-    - **Parameters:**
-        - `wildcard_pattern` (_str_)  
-    - **Return:** _[carla.BlueprintLibrary](#carla.BlueprintLibrary)_  
-    - **Note:** <font color="#8E8E8E">_The wildcard_pattern follows Unix shell-style wildcards (fnmatch).
-_</font>  
 - <a name="carla.BlueprintLibrary.__getitem__"></a>**<font color="#7fb800">\__getitem__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**pos**</font>)  
+Returns the blueprint stored in `pos` position inside the data structure containing them.  
     - **Parameters:**
         - `pos` (_int_)  
     - **Return:** _[carla.ActorBlueprint](#carla.ActorBlueprint)_  
-- <a name="carla.BlueprintLibrary.__len__"></a>**<font color="#7fb800">\__len__</font>**(<font color="#00a6ed">**self**</font>)  
 - <a name="carla.BlueprintLibrary.__iter__"></a>**<font color="#7fb800">\__iter__</font>**(<font color="#00a6ed">**self**</font>)  
+Method that allows iteration of this class.  
+- <a name="carla.BlueprintLibrary.__len__"></a>**<font color="#7fb800">\__len__</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the amount of blueprints comprising the library.  
+    - **Return:** _int_  
 - <a name="carla.BlueprintLibrary.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+Parses the identifiers for every blueprint and shows them on screen.  
+    - **Return:** _string_  
+- <a name="carla.BlueprintLibrary.filter"></a>**<font color="#7fb800">filter</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**wildcard_pattern**</font>)  
+Filters a list of blueprints matching the `wildcard_pattern` against the id and tags of every blueprint contained in this library and returns the result as a new one. Matching follows [fnmatch](https://docs.python.org/2/library/fnmatch.html) standard.  
+    - **Parameters:**
+        - `wildcard_pattern` (_str_)  
+    - **Return:** _[carla.BlueprintLibrary](#carla.BlueprintLibrary)_  
+- <a name="carla.BlueprintLibrary.find"></a>**<font color="#7fb800">find</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**id**</font>)  
+Returns the blueprint corresponding to that identifier.  
+    - **Parameters:**
+        - `id` (_str_)  
+    - **Return:** _[carla.ActorBlueprint](#carla.ActorBlueprint)_  
 
 ---
 
@@ -306,7 +312,7 @@ Executes a list of commands on a single simulation step and retrieves no informa
   [SetSimulatePhysics](#command.SetSimulatePhysics)    
   [SetAutopilot](#command.SetAutopilot).  
 - <a name="carla.Client.apply_batch_sync"></a>**<font color="#7fb800">apply_batch_sync</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**commands**</font>, <font color="#00a6ed">**due_tick_cue**</font>)  
-Executes a list of commands on a single simulation step, blocks until the commands are linked, and returns a list of [`command.Response`](#command.Response) that can be used to determine whether a single command succeeded or not. [sample_code](https://github.com/carla-simulator/carla/blob/10c5f6a482a21abfd00220c68c7f12b4110b7f63/PythonAPI/examples/spawn_npc.py#L112-L116).  
+Executes a list of commands on a single simulation step, blocks until the commands are linked, and returns a list of command.Response that can be used to determine whether a single command succeeded or not. [Here](https://github.com/carla-simulator/carla/blob/10c5f6a482a21abfd00220c68c7f12b4110b7f63/PythonAPI/examples/spawn_npc.py#L112-L116) is an example of it being used to spawn actors.  
     - **Parameters:**
         - `commands` (_list_) – A list of commands to execute in batch. The commands available are listed right above, in the function **<font color="#7fb800">apply_batch()</font>**.  
         - `due_tick_cue` (_bool_) – A boolean parameter to specify whether or not to perform a [carla.World.tick](#carla.World.tick) after applying the batch in _synchronous mode_.  
@@ -762,12 +768,15 @@ Save point cloud to disk.
 ---
 
 ## carla.Location<a name="carla.Location"></a><sub><sup>([carla.Vector3D](#carla.Vector3D))</sup></sub> <sub><sup>_class_</sup></sub>
-Represents a location in the world (in meters).  
+Represents a spot in the world.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.Location.x"></a>**<font color="#f8805a">x</font>** (_float_)  
+Distance in meters from origin to spot on X axis.  
 - <a name="carla.Location.y"></a>**<font color="#f8805a">y</font>** (_float_)  
+Distance in meters from origin to spot on Y axis.  
 - <a name="carla.Location.z"></a>**<font color="#f8805a">z</font>** (_float_)  
+Distance in meters from origin to spot on Z axis.  
 
 <h3>Methods</h3>
 - <a name="carla.Location.__init__"></a>**<font color="#7fb800">\__init__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**x**=0.0</font>, <font color="#00a6ed">**y**=0.0</font>, <font color="#00a6ed">**z**=0.0</font>)  
@@ -775,18 +784,24 @@ Represents a location in the world (in meters).
         - `x` (_float_)  
         - `y` (_float_)  
         - `z` (_float_)  
-- <a name="carla.Location.distance"></a>**<font color="#7fb800">distance</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**location**</font>)  
-Computes the Euclidean distance in meters from this location to another one.  
-    - **Parameters:**
-        - `location` (_[carla.Location](#carla.Location)_) – The Location from where to compute the distance.  
-    - **Return:** _float_  
 - <a name="carla.Location.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns true if both locations are the point in space.  
     - **Parameters:**
-        - `other` (_[carla.Location](#carla.Location)_)  
+        - `other` (_[carla.Location](#carla.Location)_) – The other point to be compared with.  
+    - **Return:** _bool_  
 - <a name="carla.Location.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns true if both locations are different points in space.  
     - **Parameters:**
-        - `other` (_[carla.Location](#carla.Location)_)  
+        - `other` (_[carla.Location](#carla.Location)_) – The other point to be compared with.  
+    - **Return:** _bool_  
 - <a name="carla.Location.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+Parses the axis' values to string.  
+    - **Return:** _str_  
+- <a name="carla.Location.distance"></a>**<font color="#7fb800">distance</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**location**</font>)  
+Returns Euclidean distance in meters from this location to another one.  
+    - **Parameters:**
+        - `location` (_[carla.Location](#carla.Location)_) – The other point to compute the distance with.  
+    - **Return:** _float_  
 
 ---
 
@@ -896,34 +911,39 @@ Retrieve the number of [carla.RadarDetection](#carla.RadarDetection) that are ge
 ---
 
 ## carla.Rotation<a name="carla.Rotation"></a> <sub><sup>_class_</sup></sub>
-Class that represents a 3D rotation. All rotation angles are stored in degrees.
+Class that represents a 3D rotation and so, an orientation in space.
 
 ![UE4_Rotation](https://d26ilriwvtzlb.cloudfront.net/8/83/BRMC_9.jpg)   _Unreal Engine's standard (from [UE4 docs](https://wiki.unrealengine.com/Blueprint_Rotating_Movement_Component))_.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.Rotation.pitch"></a>**<font color="#f8805a">pitch</font>** (_float_)  
-Rotation about Y-axis.  
+Degrees around the Y-axis.  
 - <a name="carla.Rotation.yaw"></a>**<font color="#f8805a">yaw</font>** (_float_)  
-Rotation about Z-axis.  
+Degrees around the Z-axis.  
 - <a name="carla.Rotation.roll"></a>**<font color="#f8805a">roll</font>** (_float_)  
-Rotation about X-axis.  
+Degrees around the X-axis.  
 
 <h3>Methods</h3>
 - <a name="carla.Rotation.__init__"></a>**<font color="#7fb800">\__init__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**pitch**=0.0</font>, <font color="#00a6ed">**yaw**=0.0</font>, <font color="#00a6ed">**roll**=0.0</font>)  
     - **Parameters:**
-        - `pitch` (_float_)  
-        - `yaw` (_float_)  
-        - `roll` (_float_)  
+        - `pitch` (_float_) – Y rotation in degrees.  
+        - `yaw` (_float_) – Z rotation in degrees.  
+        - `roll` (_float_) – X rotation in degrees.  
 - <a name="carla.Rotation.get_forward_vector"></a>**<font color="#7fb800">get_forward_vector</font>**(<font color="#00a6ed">**self**</font>)  
-Computes a forward vector using the current rotation.  
+Computes the vector pointing forward according the orientation for every axis.  
     - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
 - <a name="carla.Rotation.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns true if both rotations represent the same orientation for every axis.  
     - **Parameters:**
-        - `other` (_[carla.Rotation](#carla.Rotation)_)  
+        - `other` (_[carla.Rotation](#carla.Rotation)_) – The other rotation to be compared with.  
+    - **Return:** _bool_  
 - <a name="carla.Rotation.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns true if both rotations represent the same orientation for every axis.  
     - **Parameters:**
-        - `other` (_[carla.Rotation](#carla.Rotation)_)  
+        - `other` (_[carla.Rotation](#carla.Rotation)_) – The other rotation to be compared with.  
+    - **Return:** _bool_  
 - <a name="carla.Rotation.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+Parses the axis' orientations to string.  
 
 ---
 
@@ -1078,40 +1098,50 @@ A [carla.BoundingBox](#carla.BoundingBox) situated near a traffic sign where the
 ---
 
 ## carla.Transform<a name="carla.Transform"></a> <sub><sup>_class_</sup></sub>
-Class that defines a transformation without scaling.  
+Class that defines a transformation without scaling. It is used to described an actor's position and rotation.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.Transform.location"></a>**<font color="#f8805a">location</font>** (_[carla.Location](#carla.Location)_)  
+Describes a point in the map.  
 - <a name="carla.Transform.rotation"></a>**<font color="#f8805a">rotation</font>** (_[carla.Rotation](#carla.Rotation)_)  
+Describes a rotation for an object according to Unreal Engine's axis system.  
 
 <h3>Methods</h3>
 - <a name="carla.Transform.__init__"></a>**<font color="#7fb800">\__init__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**location**</font>, <font color="#00a6ed">**rotation**</font>)  
     - **Parameters:**
         - `location` (_[carla.Location](#carla.Location)_)  
         - `rotation` (_[carla.Rotation](#carla.Rotation)_)  
+- <a name="carla.Transform.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns true if both location and rotation are equal for this and `other`.  
+    - **Parameters:**
+        - `other` (_[carla.Transform](#carla.Transform)_)  
+    - **Return:** _bool_  
+- <a name="carla.Transform.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns true if both location and rotation are not equal for this and `other`.  
+    - **Parameters:**
+        - `other` (_[carla.Transform](#carla.Transform)_)  
+    - **Return:** _bool_  
+- <a name="carla.Transform.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+Parses both location and rotation to string.  
+    - **Return:** _str_  
+- <a name="carla.Transform.get_forward_vector"></a>**<font color="#7fb800">get_forward_vector</font>**(<font color="#00a6ed">**self**</font>)  
+Computes a forward vector using its rotation.  
+    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
 - <a name="carla.Transform.transform"></a>**<font color="#7fb800">transform</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**in_point**</font>)  
 Transform a 3D point using the current transformation.  
     - **Parameters:**
         - `in_point` (_[carla.Location](#carla.Location)_) – Location in the space to which the transformation will be applied.  
-- <a name="carla.Transform.get_forward_vector"></a>**<font color="#7fb800">get_forward_vector</font>**(<font color="#00a6ed">**self**</font>)  
-Computes a forward vector using the rotation of the current transformation.  
-    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
-- <a name="carla.Transform.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-    - **Parameters:**
-        - `other` (_[carla.Transform](#carla.Transform)_)  
-- <a name="carla.Transform.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-    - **Parameters:**
-        - `other` (_[carla.Transform](#carla.Transform)_)  
-- <a name="carla.Transform.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
 
 ---
 
 ## carla.Vector2D<a name="carla.Vector2D"></a> <sub><sup>_class_</sup></sub>
-Vector 2D helper class.  
+Helper class to perform 2D operations.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.Vector2D.x"></a>**<font color="#f8805a">x</font>** (_float_)  
+X-axis value.  
 - <a name="carla.Vector2D.y"></a>**<font color="#f8805a">y</font>** (_float_)  
+Y-axis value.  
 
 <h3>Methods</h3>
 - <a name="carla.Vector2D.__init__"></a>**<font color="#7fb800">\__init__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**x**=0.0</font>, <font color="#00a6ed">**y**=0.0</font>)  
@@ -1119,34 +1149,51 @@ Vector 2D helper class.
         - `x` (_float_)  
         - `y` (_float_)  
 - <a name="carla.Vector2D.__add__"></a>**<font color="#7fb800">\__add__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns the resulting vector from adding values for each axis.  
     - **Parameters:**
         - `other` (_[carla.Vector2D](#carla.Vector2D)_)  
-- <a name="carla.Vector2D.__mul__"></a>**<font color="#7fb800">\__mul__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-    - **Parameters:**
-        - `other` (_[carla.Vector2D](#carla.Vector2D)_)  
+    - **Return:** _[carla.Vector2D](#carla.Vector2D)_  
 - <a name="carla.Vector2D.__sub__"></a>**<font color="#7fb800">\__sub__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns the resulting vector from substracting values for each axis.  
     - **Parameters:**
         - `other` (_[carla.Vector2D](#carla.Vector2D)_)  
+    - **Return:** _[carla.Vector2D](#carla.Vector2D)_  
+- <a name="carla.Vector2D.__mul__"></a>**<font color="#7fb800">\__mul__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns the resulting vector from multiplying values for each axis.  
+    - **Parameters:**
+        - `other` (_[carla.Vector2D](#carla.Vector2D)_)  
+    - **Return:** _[carla.Vector2D](#carla.Vector2D)_  
 - <a name="carla.Vector2D.__truediv__"></a>**<font color="#7fb800">\__truediv__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns the resulting vector from dividing values for each axis.  
     - **Parameters:**
         - `other` (_[carla.Vector2D](#carla.Vector2D)_)  
+    - **Return:** _[carla.Vector2D](#carla.Vector2D)_  
 - <a name="carla.Vector2D.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns true if values for every axis are equal.  
     - **Parameters:**
         - `other` (_[carla.Vector2D](#carla.Vector2D)_)  
-- <a name="carla.Vector2D.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+    - **Return:** _bool_  
+- <a name="carla.Vector2D.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**bool**</font>)  
+Returns true if the value for any axis is different.  
     - **Parameters:**
-        - `other` (_[carla.Vector2D](#carla.Vector2D)_)  
-- <a name="carla.Vector2D.__self__"></a>**<font color="#7fb800">\__self__</font>**(<font color="#00a6ed">**self**</font>)  
+        - `bool` (_[carla.Vector2D](#carla.Vector2D)_)  
+    - **Return:** _bool_  
+- <a name="carla.Vector2D.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the axis values for the vector parsed as string.  
+    - **Return:** _str_  
 
 ---
 
 ## carla.Vector3D<a name="carla.Vector3D"></a> <sub><sup>_class_</sup></sub>
-Vector 3D helper class.  
+Helper class to perform 3D operations.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.Vector3D.x"></a>**<font color="#f8805a">x</font>** (_float_)  
+X-axis value.  
 - <a name="carla.Vector3D.y"></a>**<font color="#f8805a">y</font>** (_float_)  
+Y-axis value.  
 - <a name="carla.Vector3D.z"></a>**<font color="#f8805a">z</font>** (_float_)  
+Z-axis value.  
 
 <h3>Methods</h3>
 - <a name="carla.Vector3D.__init__"></a>**<font color="#7fb800">\__init__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**x**=0.0</font>, <font color="#00a6ed">**y**=0.0</font>, <font color="#00a6ed">**z**=0.0</font>)  
@@ -1155,24 +1202,37 @@ Vector 3D helper class.
         - `y` (_float_)  
         - `z` (_float_)  
 - <a name="carla.Vector3D.__add__"></a>**<font color="#7fb800">\__add__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns the resulting vector from adding values for each axis.  
     - **Parameters:**
         - `other` (_[carla.Vector3D](#carla.Vector3D)_)  
+    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
 - <a name="carla.Vector3D.__mul__"></a>**<font color="#7fb800">\__mul__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns the resulting vector from adding values for each axis.  
     - **Parameters:**
         - `other` (_[carla.Vector3D](#carla.Vector3D)_)  
+    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
 - <a name="carla.Vector3D.__sub__"></a>**<font color="#7fb800">\__sub__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns the resulting vector from adding values for each axis.  
     - **Parameters:**
         - `other` (_[carla.Vector3D](#carla.Vector3D)_)  
+    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
 - <a name="carla.Vector3D.__truediv__"></a>**<font color="#7fb800">\__truediv__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns the resulting vector from adding values for each axis.  
     - **Parameters:**
         - `other` (_[carla.Vector3D](#carla.Vector3D)_)  
+    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
 - <a name="carla.Vector3D.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns true if values for every axis are equal.  
     - **Parameters:**
         - `other` (_[carla.Vector3D](#carla.Vector3D)_)  
+    - **Return:** _bool_  
 - <a name="carla.Vector3D.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns true if the value for any axis is different.  
     - **Parameters:**
         - `other` (_[carla.Vector3D](#carla.Vector3D)_)  
+    - **Return:** _bool_  
 - <a name="carla.Vector3D.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the axis values for the vector parsed as string.  
 
 ---
 
@@ -1478,39 +1538,44 @@ Can return `None` if the lane does not exist.
 ---
 
 ## carla.WeatherParameters<a name="carla.WeatherParameters"></a> <sub><sup>_class_</sup></sub>
-WeatherParameters class is used for requesting and changing the lighting and weather conditions inside the world.  
+This class defines objects containing lightning and weather specifications that can be later be applied in [carla.World](#carla.World). So far, these conditions only intervene with [sensor.camera.rgb](/bp_library/). They neither affect the actor's physics nor other sensors.        
+  Each of these parameters acts indepently from the rest. Increasing the rainfall will not automatically create puddles nor change the road's humidity. That makes for a better customization but means that realistic conditions need to be scripted. However an example of dynamic weather conditions working reallistically can be found [here](https://github.com/carla-simulator/carla/blob/master/PythonAPI/examples/dynamic_weather.py).  
 
 <h3>Instance Variables</h3>
 - <a name="carla.WeatherParameters.cloudiness"></a>**<font color="#f8805a">cloudiness</font>** (_float_)  
-Weather cloudiness. Values range from 0 to 100.  
+Values range from 0 to 100, being 0 a clear sky and 100 one completely covered with clouds.  
 - <a name="carla.WeatherParameters.precipitation"></a>**<font color="#f8805a">precipitation</font>** (_float_)  
-Precipitation amount for controlling rain intensity. Values range from 0 to 100.  
+Rain intensity values range from 0 to 100, being 0 none at all and 100 a heavy rain.  
 - <a name="carla.WeatherParameters.precipitation_deposits"></a>**<font color="#f8805a">precipitation_deposits</font>** (_float_)  
-Precipitation deposits for controlling the area of puddles on roads. Values range from 0 to 100.  
+Determines the creation of puddles. Values range from 0 to 100, being 0 none at all and 100 a road completely capped with water. Puddles are created with static noise, meaning that they will always appear at the same locations.  
 - <a name="carla.WeatherParameters.wind_intensity"></a>**<font color="#f8805a">wind_intensity</font>** (_float_)  
-Wind intensity. Values range from 0 to 100.  
+Controlls the strenght of the wind with values from 0, no wind at all, to 100, a strong wind. The wind does affect rain direction and leaves from trees, so this value is restricted to avoid animation issues.  
 - <a name="carla.WeatherParameters.sun_azimuth_angle"></a>**<font color="#f8805a">sun_azimuth_angle</font>** (_float_)  
-The azimuth angle of the sun in degrees. Values range from 0 to 360.  
+The azimuth angle of the sun in degrees. Values range from 0 to 360. Zero is an origin point in a sphere determined by Unreal Engine.  
 - <a name="carla.WeatherParameters.sun_altitude_angle"></a>**<font color="#f8805a">sun_altitude_angle</font>** (_float_)  
-Altitude angle of the sun in degrees. Values range from -90 to 90.  
+Altitude angle of the sun in degrees. Values range from -90 to 90 corresponding to midnight and midday each.  
 
 <h3>Methods</h3>
 - <a name="carla.WeatherParameters.__init__"></a>**<font color="#7fb800">\__init__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**cloudiness**=0.0</font>, <font color="#00a6ed">**precipitation**=0.0</font>, <font color="#00a6ed">**precipitation_deposits**=0.0</font>, <font color="#00a6ed">**wind_intensity**=0.0</font>, <font color="#00a6ed">**sun_azimuth_angle**=0.0</font>, <font color="#00a6ed">**sun_altitude_angle**=0.0</font>)  
-WeatherParameters constructor.  
+Method to initialize an object defining weather conditions. This class has some presets for different noon and sunset conditions listed in a note below.  
     - **Parameters:**
-        - `cloudiness` (_float_)  
-        - `precipitation` (_float_)  
-        - `precipitation_deposits` (_float_)  
-        - `wind_intensity` (_float_)  
-        - `sun_azimuth_angle` (_float_)  
-        - `sun_altitude_angle` (_float_)  
+        - `cloudiness` (_float_) – 0 is a clear sky, 100 complete overcast.  
+        - `precipitation` (_float_) – 0 is no rain at all, 100 a heavy rain.  
+        - `precipitation_deposits` (_float_) – 0 means no puddles on the road, 100 means roads completely capped by rain.  
+        - `wind_intensity` (_float_) – 0 is calm, 100 a strong wind.  
+        - `sun_azimuth_angle` (_float_) – 90 is midday, -90 is midnight.  
+        - `sun_altitude_angle` (_float_) – 0 is an arbitrary North, 180 its corresponding South.  
+    - **Note:** <font color="#8E8E8E">_ClearNoon, CloudyNoon, WetNoon, WetCloudyNoon, SoftRainNoon, MidRainyNoon, HardRainNoon, ClearSunset, CloudySunset, WetSunset, WetCloudySunset, SoftRainSunset, MidRainSunset, HardRainSunset. 
+_</font>  
 - <a name="carla.WeatherParameters.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Returns True if `self` and `other` are equal.  
+Returns <b>True</b> if both objects' variables are the same.  
     - **Return:** _bool_  
 - <a name="carla.WeatherParameters.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Returns True if `self` and `other` are not equal.  
+Returns <b>True</b> if both objects' variables are different.  
     - **Return:** _bool_  
 - <a name="carla.WeatherParameters.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+Parses a summary of the parameters defined to string and shows it up on screen.  
+    - **Return:** _str_  
 
 ---
 
@@ -1610,10 +1675,12 @@ The method will start callbacks for a defined function `callback`. It will retur
     - **Return:** _int_  
 - <a name="carla.World.remove_on_tick"></a>**<font color="#7fb800">remove_on_tick</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**callback_id**</font>)  
 Stops the callback for `callback_id` started with **<font color="#7fb800">on_tick()</font>**.  
+    - **Parameters:**
+        - `callback_id` (_callback_) – The callback to be removed.  
 - <a name="carla.World.set_weather"></a>**<font color="#7fb800">set_weather</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**weather**</font>)  
 Changes the weather parameteres ruling the simulation to another ones defined in an object.  
     - **Parameters:**
-        - `weather` (_[carla.WeatherParameters](#carla.WeatherParameters)_)  
+        - `weather` (_[carla.WeatherParameters](#carla.WeatherParameters)_) – New conditions to be applied.  
 - <a name="carla.World.spawn_actor"></a>**<font color="#7fb800">spawn_actor</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**blueprint**</font>, <font color="#00a6ed">**transform**</font>, <font color="#00a6ed">**attach_to**=None</font>, <font color="#00a6ed">**attachment**=Rigid</font>)  
 The method will create, return and spawn an actor into the world. The actor will need an available blueprint to be created and a transform (location and rotation). It can also be attached to a parent with a certain attachment type.  
     - **Parameters:**
@@ -1642,7 +1709,7 @@ The client tells the server to block calling thread until a **<font color="#7fb8
 ---
 
 ## carla.WorldSettings<a name="carla.WorldSettings"></a> <sub><sup>_class_</sup></sub>
-The simulation has some advanced configuration options that are contained in this class and can be managed using [carla.World](#carla.World) and its methods. These allow the user to choose the synchrony/asynchrony between client and server, the activation of a no rendering mode and either if the simulation will run with a fixed or variable time-step. Check [this](../configuring_the_simulation/) out if you want to learn about it.  
+The simulation has some advanced configuration options that are contained in this class and can be managed using [carla.World](#carla.World) and its methods. These allow the user to choose between client-server synchrony/asynchrony, activation of "no rendering mode" and either if the simulation should run with a fixed or variable time-step. Check [this](../configuring_the_simulation/) out if you want to learn about it.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.WorldSettings.synchronous_mode"></a>**<font color="#f8805a">synchronous_mode</font>** (_bool_)  
@@ -1650,30 +1717,33 @@ States the synchrony between client and server. When set to true, both will work
 - <a name="carla.WorldSettings.no_rendering_mode"></a>**<font color="#f8805a">no_rendering_mode</font>** (_bool_)  
 When enabled, the simulation will run no rendering at all. This is mainly used to avoid overhead during heavy traffic simulations. It is false by default.  
 - <a name="carla.WorldSettings.fixed_delta_seconds"></a>**<font color="#f8805a">fixed_delta_seconds</font>** (_float_)  
-Grants that the time elapsed between two steps of the simulation is fixed. Set this to <b>None</b> to work with a variable time-step, as happens by default.  
+Grants that the time elapsed between two steps of the simulation is fixed. Set this to <b>0.0</b> to work with a variable time-step, as happens by default.  
 
 <h3>Methods</h3>
-- <a name="carla.WorldSettings.__init__"></a>**<font color="#7fb800">\__init__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**synchronous_mode**</font>, <font color="#00a6ed">**no_rendering_mode**</font>, <font color="#00a6ed">**fixed_delta_seconds**</font>)  
-Create an object containing desired settings that could later be applied through [carla.World](#carla.World) and its method **<font color="#7fb800">apply_settings()</font>**.  
+- <a name="carla.WorldSettings.__init__"></a>**<font color="#7fb800">\__init__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**synchronous_mode**=False</font>, <font color="#00a6ed">**no_rendering_mode**=False</font>, <font color="#00a6ed">**fixed_delta_seconds**=0.0</font>)  
+Creates an object containing desired settings that could later be applied through [carla.World](#carla.World) and its method **<font color="#7fb800">apply_settings()</font>**.  
     - **Parameters:**
         - `synchronous_mode` (_bool_) – Set this to true to enable client-server synchrony.  
         - `no_rendering_mode` (_bool_) – Set this to true to completely disable rendering in the simulation.  
-        - `fixed_delta_seconds` (_float_) – Set this time in seconds to get a fixed time-step in between frames.  
+        - `fixed_delta_seconds` (_float_) – Set this time in seconds to get a fixed time-step in between frames. 0.0 means variable time-step and it is the default mode.  
 - <a name="carla.WorldSettings.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Compares ........  
+Returns <b>True</b> if both objects' variables are the same.  
     - **Parameters:**
-        - `other` (_[carla.Timestamp](#carla.Timestamp)_)  
+        - `other` (_[carla.WorldSettings](#carla.WorldSettings)_) – Settings to be compared with.  
+    - **Return:** _bool_  
 - <a name="carla.WorldSettings.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Creat......  
+Returns <b>True</b> if both objects' variables are different.  
     - **Parameters:**
-        - `other` (_[carla.Timestamp](#carla.Timestamp)_)  
+        - `other` (_[carla.WorldSettings](#carla.WorldSettings)_) – Settings to be compared with.  
+    - **Return:** _bool_  
 - <a name="carla.WorldSettings.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
-Parses the settings established to a string and shows them in command line.  
+Parses the established settings to a string and shows them in command line.  
+    - **Return:** _str_  
 
 ---
 
 ## carla.WorldSnapshot<a name="carla.WorldSnapshot"></a> <sub><sup>_class_</sup></sub>
-This object contains a list of [carla.ActorSnapshot](#carla.ActorSnapshot), which comprises all the information for every actor on scene at a certain moment of time.  
+This snapshot comprises all the information for every actor on scene at a certain moment of time. It creates and gives acces to a data structure containing a series of [carla.ActorSnapshot](#carla.ActorSnapshot). The client recieves a new snapshot on every tick and this cannot be stored.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.WorldSnapshot.id"></a>**<font color="#f8805a">id</font>** (_int_)  
@@ -1684,27 +1754,31 @@ Simulation frame in which the snapshot was taken.
 Precise moment in time when snapshot was taken. This class works in seconds as given by the operative system.  
 
 <h3>Methods</h3>
-- <a name="carla.WorldSnapshot.has_actor"></a>**<font color="#7fb800">has_actor</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**actor_id**</font>)  
-Given a certain actor ID, checks if there is a snapshot corresponding it and so, if the actor was present at that moment.  
+- <a name="carla.WorldSnapshot.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns <b>True</b> if both **<font color="#f8805a">timestamp</font>** are the same.  
     - **Parameters:**
-        - `actor_id` (_int_)  
+        - `other` (_[carla.WorldSnapshot](#carla.WorldSnapshot)_)  
+    - **Return:** _bool_  
+- <a name="carla.WorldSnapshot.__iter__"></a>**<font color="#7fb800">\__iter__</font>**(<font color="#00a6ed">**self**</font>)  
+Method that enables iteration for this class using **<font color="#f8805a">timestamp</font>** as reference value.  
+- <a name="carla.WorldSnapshot.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns <b>True</b> if both **<font color="#f8805a">timestamp</font>** are different.  
+    - **Parameters:**
+        - `other` (_[carla.WorldSnapshot](#carla.WorldSnapshot)_)  
+    - **Return:** _bool_  
+- <a name="carla.WorldSnapshot.__len__"></a>**<font color="#7fb800">\__len__</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the amount of [carla.ActorSnapshot](#carla.ActorSnapshot) present in this snapshot.  
+    - **Return:** _int_  
 - <a name="carla.WorldSnapshot.find"></a>**<font color="#7fb800">find</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**actor_id**</font>)  
 Given a certain actor ID, returns its corresponding snapshot or <b>None</b> if it is not found.  
     - **Parameters:**
         - `actor_id` (_int_)  
-- <a name="carla.WorldSnapshot.__len__"></a>**<font color="#7fb800">\__len__</font>**(<font color="#00a6ed">**self**</font>)  
-Return number of [carla.ActorSnapshot](#carla.ActorSnapshot) present in this [carla.WorldSnapshot](#carla.WorldSnapshot).  
-    - **Return:** _int_  
-- <a name="carla.WorldSnapshot.__iter__"></a>**<font color="#7fb800">\__iter__</font>**(<font color="#00a6ed">**self**</font>)  
-Method that enables iteration for this class, using **<font color="#f8805a">timestamp</font>** as reference value.  
-- <a name="carla.WorldSnapshot.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Method that enables comparison between objects of this class, using **<font color="#f8805a">timestamp</font>** as reference value.  
+    - **Return:** _[carla.ActorSnapshot](#carla.ActorSnapshot)_  
+- <a name="carla.WorldSnapshot.has_actor"></a>**<font color="#7fb800">has_actor</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**actor_id**</font>)  
+Given a certain actor ID, checks if there is a snapshot corresponding it and so, if the actor was present at that moment.  
     - **Parameters:**
-        - `other` (_[carla.WorldSnapshot](#carla.WorldSnapshot)_)  
-- <a name="carla.WorldSnapshot.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Method that enables comparison between objects of this class, using **<font color="#f8805a">timestamp</font>** as reference value.  
-    - **Parameters:**
-        - `other` (_[carla.WorldSnapshot](#carla.WorldSnapshot)_)  
+        - `actor_id` (_int_)  
+    - **Return:** _bool_  
 
 ---
 

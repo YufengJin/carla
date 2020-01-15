@@ -233,42 +233,45 @@
   - class_name: BlueprintLibrary
     # - DESCRIPTION ------------------------
     doc: >
-      Class that provides access to [blueprints](../bp_library/).
+      A class that gives access to the blueprints provided for actor spawning and returns the carla.Actorblueprint that will be used for that. Each blueprint has an identifier and attributes that may or may not be modifiable depending on which. [Here](../bp_library/) is a reference containing every available blueprint and its specifics.  
     # - METHODS ----------------------------
     methods:
-    - def_name: find
-      params:
-      - param_name: id
-        type: str
-      return: carla.ActorBlueprint
-      doc: >
-        Returns a carla.ActorBlueprint through its id
-    # --------------------------------------
-    - def_name: filter
-      params:
-      - param_name: wildcard_pattern
-        type: str
-      doc: >
-        Filters a list of ActorBlueprint with id or tags matching wildcard_pattern.
-        The pattern is matched against each blueprint's id and tags.
-      note: > 
-        The wildcard_pattern follows Unix shell-style wildcards (fnmatch).
-      return: carla.BlueprintLibrary
-    # --------------------------------------
     - def_name: __getitem__
       params:
       - param_name: pos
         type: int
       return: carla.ActorBlueprint
       doc: >
-    # --------------------------------------
-    - def_name: __len__
-      doc: >
+        Returns the blueprint stored in `pos` position inside the data structure containing them. 
     # --------------------------------------
     - def_name: __iter__
       doc: >
+        Method that allows iteration of this class. 
+    # --------------------------------------
+    - def_name: __len__
+      return: int 
+      doc: >
+        Returns the amount of blueprints comprising the library. 
     # --------------------------------------
     - def_name: __str__
+      return: string 
       doc: >
+        Parses the identifiers for every blueprint and shows them on screen. 
+    # --------------------------------------
+    - def_name: filter
+      params:
+      - param_name: wildcard_pattern
+        type: str
+      doc: >
+        Filters a list of blueprints matching the `wildcard_pattern` against the id and tags of every blueprint contained in this library and returns the result as a new one. Matching follows [fnmatch](https://docs.python.org/2/library/fnmatch.html) standard.
+      return: carla.BlueprintLibrary
+    # --------------------------------------
+    - def_name: find
+      params:
+      - param_name: id
+        type: str
+      return: carla.ActorBlueprint
+      doc: >
+        Returns the blueprint corresponding to that identifier. 
     # --------------------------------------
 ...

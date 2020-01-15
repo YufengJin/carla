@@ -59,7 +59,7 @@
   - class_name: ActorList
     # - DESCRIPTION ------------------------
     doc: >
-      Class that provides access to actors.
+      A class that contains every actor present on the scene and provides acces to them.
     # - METHODS ----------------------------
     methods:
     - def_name: find
@@ -67,37 +67,39 @@
       - param_name: actor_id
         type: int
       doc: >
-        Find an actor by ID.
+        Finds an actor using its identifier and returns it or <b>None</b> if it is not present. 
     # --------------------------------------
     - def_name: filter
       params:
       - param_name: wildcard_pattern
         type: str
       doc: >
-        Filters a list of Actors with type_id matching wildcard_pattern.
-      note: >
-         The wildcard_pattern follows Unix shell-style wildcards (fnmatch). 
+        Filters a list of Actors matching `wildcard_pattern` against their variable **<font color="#f8805a">type_id</font>** (which identifies the blueprint used to spawn them). Matching follows [fnmatch](https://docs.python.org/2/library/fnmatch.html) standard.  
     # --------------------------------------
     - def_name: __getitem__
       params:
       - param_name: pos
         type: int
       doc: >
+        Returns the actor corresponding to `pos` position in the list. 
     # --------------------------------------
     - def_name: __len__
       doc: >
+        Returns the amount of actors listed. 
     # --------------------------------------
     - def_name: __iter__
       doc: >
+        Allows the iteration for this object. 
     # --------------------------------------
     - def_name: __str__
       doc: >
+        Parses the information comprised for every actor and shows it on screen. 
     # --------------------------------------
 
   - class_name: WorldSettings
     # - DESCRIPTION ------------------------
     doc: >
-      The simulation has some advanced configuration options that are contained in this class and can be managed using carla.World and its methods. These allow the user to choose the synchrony/asynchrony between client and server, the activation of a no rendering mode and either if the simulation will run with a fixed or variable time-step. Check [this](../configuring_the_simulation/) out if you want to learn about it. 
+      The simulation has some advanced configuration options that are contained in this class and can be managed using carla.World and its methods. These allow the user to choose between client-server synchrony/asynchrony, activation of "no rendering mode" and either if the simulation should run with a fixed or variable time-step. Check [this](../configuring_the_simulation/) out if you want to learn about it. 
     # - PROPERTIES -------------------------
     instance_variables:
     - var_name: synchronous_mode
@@ -111,59 +113,68 @@
     - var_name: fixed_delta_seconds
       type: float
       doc: >
-        Grants that the time elapsed between two steps of the simulation is fixed. Set this to <b>None</b> to work with a variable time-step, as happens by default.  
+        Grants that the time elapsed between two steps of the simulation is fixed. Set this to <b>0.0</b> to work with a variable time-step, as happens by default.  
     # - METHODS ----------------------------
     methods:
     - def_name: __init__
       params:
       - param_name: synchronous_mode
         type: bool
+        default: False
         doc: >
           Set this to true to enable client-server synchrony. 
       - param_name: no_rendering_mode
         type: bool
+        default: False
         doc: >
           Set this to true to completely disable rendering in the simulation.
       - param_name: fixed_delta_seconds
         type: float
+        default: 0.0
         doc: >
-          Set this time in seconds to get a fixed time-step in between frames.
+          Set this time in seconds to get a fixed time-step in between frames. 0.0 means variable time-step and it is the default mode. 
       doc: >
-        Create an object containing desired settings that could later be applied through carla.World and its method **<font color="#7fb800">apply_settings()</font>**.
+        Creates an object containing desired settings that could later be applied through carla.World and its method **<font color="#7fb800">apply_settings()</font>**.
     # --------------------------------------
     - def_name: __eq__
+      return: bool
       params:
       - param_name: other
-        type: carla.Timestamp
+        type: carla.WorldSettings
+        doc: > 
+          Settings to be compared with. 
       doc: >
-        Compares ........
+        Returns <b>True</b> if both objects' variables are the same. 
     # --------------------------------------
     - def_name: __ne__
+      return: bool
       params:
       - param_name: other
-        type: carla.Timestamp
+        type: carla.WorldSettings
+        doc: > 
+          Settings to be compared with. 
       doc: >
-        Creat......
+        Returns <b>True</b> if both objects' variables are different. 
     # --------------------------------------
     - def_name: __str__
+      return: str
       doc: > 
-        Parses the settings established to a string and shows them in command line. 
+        Parses the established settings to a string and shows them in command line. 
     # --------------------------------------
 
   - class_name: AttachmentType
     # - DESCRIPTION ------------------------
     doc: >
-      Class that defines the attachment options. See carla.World.spawn_actor.<br>
-      Check out this [`recipe`](../python_cookbook/#attach-sensors-recipe)!
+      Class that defines attachment options between an actor and its parent. When spawning actors, these can be attached to another actor so their position accordingly. This is specially useful for cameras and sensors. [Here](../python_cookbook/#attach-sensors-recipe) is a brief recipe in which we can see how sensors can be attached to a car when spawned.
       
     # - PROPERTIES -------------------------
     instance_variables:
     - var_name: Rigid
       doc: >
-        Standard fixed attachment.
+        With this fixed attatchment the object follow its parent position strictly. 
     - var_name: SpringArm
       doc: >
-        Attachment that expands or retracts based on camera situation.
+        An attachment that expands or retracts depending on camera situation. SpringArms are an Unreal Engine component so [check this out](../python_cookbook/#attach-sensors-recipe) to learn some more about them.  
     # --------------------------------------
 
   - class_name: World
@@ -262,6 +273,9 @@
     - def_name: remove_on_tick
       params:
       - param_name: callback_id
+        type: callback
+        doc: > 
+          The callback to be removed.  
       doc: >
         Stops the callback for `callback_id` started with **<font color="#7fb800">on_tick()</font>**.
     # --------------------------------------
@@ -269,6 +283,8 @@
       params: 
       - param_name: weather
         type: carla.WeatherParameters
+        doc: > 
+          New conditions to be applied. 
       doc: >
         Changes the weather parameteres ruling the simulation to another ones defined in an object. 
     # --------------------------------------
