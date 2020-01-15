@@ -280,106 +280,108 @@ So, if you want to know the _X bounding box size_, you can just do `extent.x * 2
 ---
 
 ## carla.Client<a name="carla.Client"></a> <sub><sup>_class_</sup></sub>
-Client used to connect to a Carla server.  
+The Client connects CARLA to the server which runs the simulation. Both server and client contain a CARLA library (libcarla) with some differences that allow communication in between them. Many clients can be created and each of these will connect to the RPC server inside the simulation to send commands. The simulation runs server-side. Once the connection is established, the client will only receive data retrieved from the simulation. Walkers are the exception. The client is in charge of managing pedestrians so, if you are running a simulation with multiple clients, some issues may arise. For example, if you spawn walkers through different clients, collisions may happen, as each client is only aware of his.
+  
+  The client also has a recording feature that saves all the information of a simulation while running it. That allows the server to replay it at will to obtain information and experiment with it. [Here](recorder_and_playback.md) is some information about how to use this recorder.  
 
 <h3>Methods</h3>
-- <a name="carla.Client.__init__"></a>**<font color="#7fb800">\__init__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**host**</font>, <font color="#00a6ed">**port**</font>, <font color="#00a6ed">**worker_threads**=0</font>)  
+- <a name="carla.Client.__init__"></a>**<font color="#7fb800">\__init__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**host**=127.0.0.1</font>, <font color="#00a6ed">**port**=2000</font>, <font color="#00a6ed">**worker_threads**=0</font>)  
 Client constructor.  
     - **Parameters:**
-        - `host` (_str_) – IP address where a CARLA Simulator instance is running.  
-        - `port` (_int_) – TCP port where the CARLA Simulator instance is running.  
+        - `host` (_str_) – IP address where a CARLA Simulator instance is running. Default is localhost (127.0.0.1).  
+        - `port` (_int_) – TCP port where the CARLA Simulator instance is running. Default are 2000 and the subsequent 2001.  
         - `worker_threads` (_int_) – Number of working threads used for background updates. If 0, use all available concurrency.  
-- <a name="carla.Client.set_timeout"></a>**<font color="#7fb800">set_timeout</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**seconds**</font>)  
-Set the timeout in seconds allowed to block when doing networking calls.  
+- <a name="carla.Client.apply_batch"></a>**<font color="#7fb800">apply_batch</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**commands**</font>)  
+Executes a list of commands on a single simulation step and retrieves no information. If you need information about the response of each command, use the **<font color="#7fb800">apply_batch_sync()</font>** function right below this one.  [Here](https://github.com/carla-simulator/carla/blob/10c5f6a482a21abfd00220c68c7f12b4110b7f63/PythonAPI/examples/spawn_npc.py#L126) is an example on how to delete the actors that appear in [carla.ActorList](#carla.ActorList) all at once.  
     - **Parameters:**
-        - `seconds` (_float_) – New timeout value in seconds.  
+        - `commands` (_list_) – A list of commands to execute in batch. Each command is different and has its own parameters. These are supported so far:            
+  [SpawnActor](#command.SpawnActor)  
+  [DestroyActor](#command.DestroyActor)    
+  [ApplyVehicleControl](#command.ApplyVehicleControl)  
+  [ApplyWalkerControl](#command.ApplyWalkerControl)   
+  [ApplyTransform](#command.ApplyTransform)    
+  [ApplyVelocity](#command.ApplyVelocity)   
+  [ApplyAngularVelocity](#command.ApplyAngularVelocity)   
+  [ApplyImpulse](#command.ApplyImpulse)    
+  [SetSimulatePhysics](#command.SetSimulatePhysics)    
+  [SetAutopilot](#command.SetAutopilot).  
+- <a name="carla.Client.apply_batch_sync"></a>**<font color="#7fb800">apply_batch_sync</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**commands**</font>, <font color="#00a6ed">**due_tick_cue**</font>)  
+Executes a list of commands on a single simulation step, blocks until the commands are linked, and returns a list of [`command.Response`](#command.Response) that can be used to determine whether a single command succeeded or not. [sample_code](https://github.com/carla-simulator/carla/blob/10c5f6a482a21abfd00220c68c7f12b4110b7f63/PythonAPI/examples/spawn_npc.py#L112-L116).  
+    - **Parameters:**
+        - `commands` (_list_) – A list of commands to execute in batch. The commands available are listed right above, in the function **<font color="#7fb800">apply_batch()</font>**.  
+        - `due_tick_cue` (_bool_) – A boolean parameter to specify whether or not to perform a [carla.World.tick](#carla.World.tick) after applying the batch in _synchronous mode_.  
+    - **Return:** _list_  
+- <a name="carla.Client.get_available_maps"></a>**<font color="#7fb800">get_available_maps</font>**(<font color="#00a6ed">**self**</font>)  
+Returns a list of strings containing the paths of the maps available on server. These paths are dynamic, they will be created during the simulation and so you will not find them when looking up in your files. One of the possible returns for this method would be:  
+  ['/Game/Carla/Maps/Town01',  
+  '/Game/Carla/Maps/Town02',  
+  '/Game/Carla/Maps/Town03',  
+  '/Game/Carla/Maps/Town04',  
+  '/Game/Carla/Maps/Town05',  
+  '/Game/Carla/Maps/Town06',  
+  '/Game/Carla/Maps/Town07'].  
+    - **Return:** _list(str)_  
 - <a name="carla.Client.get_client_version"></a>**<font color="#7fb800">get_client_version</font>**(<font color="#00a6ed">**self**</font>)  
-Get the client version as a string.  
+Returns the client libcarla version by consulting it in the "Version.h" file. Both client and server should use the same libcarla version.  
     - **Return:** _str_  
 - <a name="carla.Client.get_server_version"></a>**<font color="#7fb800">get_server_version</font>**(<font color="#00a6ed">**self**</font>)  
-Get the server version as a string.  
+Returns the server libcarla version by consulting it in the "Version.h" file. Both client and server should use the same libcarla version.  
     - **Return:** _str_  
 - <a name="carla.Client.get_world"></a>**<font color="#7fb800">get_world</font>**(<font color="#00a6ed">**self**</font>)  
-Get the world currently active in the simulation.  
+Returns the world object currently active in the simulation. This world will be later used for example to load maps.  
     - **Return:** _[carla.World](#carla.World)_  
-- <a name="carla.Client.get_available_maps"></a>**<font color="#7fb800">get_available_maps</font>**(<font color="#00a6ed">**self**</font>)  
-Get a list of strings of the maps available on server. The result can be something like:  
-  '/Game/Carla/Maps/Town01'  
-  '/Game/Carla/Maps/Town02'  
-  '/Game/Carla/Maps/Town03'  
-  '/Game/Carla/Maps/Town04'  
-  '/Game/Carla/Maps/Town05'  
-  '/Game/Carla/Maps/Town06'  
-  '/Game/Carla/Maps/Town07'.  
-    - **Return:** _list(str)_  
-- <a name="carla.Client.reload_world"></a>**<font color="#7fb800">reload_world</font>**(<font color="#00a6ed">**self**</font>)  
-Reload the current world, note that a new world is created with default settings using the same map. All actors present in the world will be destroyed.  
-    - **Raises:** RuntimeError  
 - <a name="carla.Client.load_world"></a>**<font color="#7fb800">load_world</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**map_name**</font>)  
-Load a new world with default settings using `map_name` map. All actors present in the current world will be destroyed.  
+Creates a new world with default settings using `map_name` map. All actors in the current world will be destroyed.  
     - **Parameters:**
-        - `map_name` (_str_) – Name of the map to load, accepts both full paths and map names, e.g. '/Game/Carla/Maps/Town01' or 'Town01'.  
-- <a name="carla.Client.start_recorder"></a>**<font color="#7fb800">start_recorder</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**filename**</font>)  
-If we use a simple name like 'recording.log' then it will be saved at server folder 'CarlaUE4/Saved/recording.log'. If we use some folder in the name, then it will be considered to be an absolute path, like '/home/carla/recording.log'.  
+        - `map_name` (_str_) – Name of the map to be used in this world. Accepts both full paths and map names, e.g. '/Game/Carla/Maps/Town01' or 'Town01'. Remember that these paths are dynamic.  
+- <a name="carla.Client.reload_world"></a>**<font color="#7fb800">reload_world</font>**(<font color="#00a6ed">**self**</font>)  
+Deletes the current world and creates a new one using the same map and default settings. Every actor in the previous world will be destroyed.  
+    - **Raises:** RuntimeError when corresponding.  
+- <a name="carla.Client.replay_file"></a>**<font color="#7fb800">replay_file</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**name**</font>, <font color="#00a6ed">**start**</font>, <font color="#00a6ed">**duration**</font>, <font color="#00a6ed">**follow_id**</font>)  
+The server will start running the simulation `name` previously recorded. The time to start and stop can be stated and if the recreation finishes, the vehicles will continue their behaviour as usual, managed by the server. During the simulation we can follow a specific actor using its ID.  
     - **Parameters:**
-        - `filename` (_str_) – Name of the file to write the recorded data.  
-- <a name="carla.Client.stop_recorder"></a>**<font color="#7fb800">stop_recorder</font>**(<font color="#00a6ed">**self**</font>)  
-Stops the recording in progress.  
-- <a name="carla.Client.show_recorder_file_info"></a>**<font color="#7fb800">show_recorder_file_info</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**filename**</font>, <font color="#00a6ed">**show_all**</font>)  
-Will show info about the recorded file (frames, times, events, state, positions...) We have the option to show all the details per frame, that includes all the traffic light states, position of all actors, and animations data.  
+        - `name` (_str_) – Name of the file containing the information of the simulation.  
+        - `start` (_float_) – Time in seconds where to start playing the simulation. Negative is read as beginning from the end, being -10 just 10 seconds before the recording finished.  
+        - `duration` (_float_) – Time in seconds that will be reenacted using the information `name` file. If the end is reached, the simulation will continue.  
+        - `follow_id` (_int_) – ID of the actor to follow. If this is 0 then camera is disabled.  
+- <a name="carla.Client.set_replayer_time_factor"></a>**<font color="#7fb800">set_replayer_time_factor</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**time_factor**=1.0</font>)  
+When used, the time speed of the reenacted simulation is modified at will. It can be used several times while a playback is in curse.  
+    - **Parameters:**
+        - `time_factor` (_float_) – 1.0 means normal time speed. Greater than 1.0 means fast motion (2.0 would be double speed) and lesser means slow motion (0.5 would be half speed).  
+- <a name="carla.Client.set_timeout"></a>**<font color="#7fb800">set_timeout</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**seconds**</font>)  
+Sets in seconds the maxixum time a network call is allowed before blocking it and raising a timeout exceeded error.  
+    - **Parameters:**
+        - `seconds` (_float_) – New timeout value in seconds. Default is 5 seconds.  
+- <a name="carla.Client.show_recorder_actors_blocked"></a>**<font color="#7fb800">show_recorder_actors_blocked</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**filename**</font>, <font color="#00a6ed">**min_time**</font>, <font color="#00a6ed">**min_distance**</font>)  
+The terminal will show the information registered for actors considered blocked. An actor is considered blocked when it does not move a minimum distance in a period of time, being these `min_distance` and `min_time`.  
     - **Parameters:**
         - `filename` (_str_) – Name of the recorded file to load.  
-        - `show_all` (_bool_) – Show all detailed info, or just a summary.  
+        - `min_time` (_float_) – Minimum time in seconds the actor has to move a minimum distance before being considered blocked. Default is 60 seconds.  
+        - `min_distance` (_float_) – Minimum distance in centimeters the actor has to move to not be considered blocked. Default is 100 centimeters.  
 - <a name="carla.Client.show_recorder_collisions"></a>**<font color="#7fb800">show_recorder_collisions</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**filename**</font>, <font color="#00a6ed">**category1**</font>, <font color="#00a6ed">**category2**</font>)  
-This will show which collisions were recorded in the file. We can use a filter for the collisions we want, using two categories. The categories can be:  
-  'h' = Hero  
+The terminal will show the collisions registered by the recorder. These can be filtered by specifying the type of actor involved. The categories will be specified in `category1` and `category2` as follows:  
+  'h' = Hero, the one vehicle that can be controlled manually or managed by the user.   
   'v' = Vehicle  
   'w' = Walker  
   't' = Traffic light  
   'o' = Other  
-  'a' = Any  
-So, if you want to see only collisions about a vehicle and a walker, we would use for category1 'v' and category2 'w'. Or if you want all the collisions (filter off) you can use 'a' as both categories.  
+  'a' = Any
+If you want to see only collisions between a vehicles and a walkers, use for `category1` as 'v' and `category2` as 'w' or vice versa. If you want to see all the collisions (filter off) you can use 'a' for both parameters.  
     - **Parameters:**
-        - `filename` (_str_) – Name of the recorded file to load.  
-        - `category1` (_single char_) – Character specifying the category of the first actor.  
-        - `category2` (_single char_) – Character specifying the category of the second actor.  
-- <a name="carla.Client.show_recorder_actors_blocked"></a>**<font color="#7fb800">show_recorder_actors_blocked</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**filename**</font>, <font color="#00a6ed">**min_time**</font>, <font color="#00a6ed">**min_distance**</font>)  
-Shows which actors seem blocked by some reason. The idea is to calculate which actors are not moving as much as 'min_distance' for a period of 'min_time'. By default min_time = 60 seconds (1 min) and min_distance = 100 centimeters (1 m).  
+        - `filename` (_str_) – Name or absolute path of the file recorded, depending on your previous choice.  
+        - `category1` (_single char_) – Character variable specifying a first type of actor involved in the collision.  
+        - `category2` (_single char_) – Character variable specifying the second type of actor involved in the collision.  
+- <a name="carla.Client.show_recorder_file_info"></a>**<font color="#7fb800">show_recorder_file_info</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**filename**</font>, <font color="#00a6ed">**show_all**=False</font>)  
+The information saved by the recorder will be parsed and shown in your terminal as text (frames, times, events, state, positions...). The information shown can be specified by using the `show_all` parameter. [Here](recorder_binary_file_format.md) is some more information about how to read the recorder file.  
     - **Parameters:**
-        - `filename` (_str_) – Name of the recorded file to load.  
-        - `min_time` (_float_) – How many seconds has to be stoped an actor to be considered as blocked.  
-        - `min_distance` (_float_) – How many centimeters needs to move the actor in order to be considered as moving, and not blocked.  
-- <a name="carla.Client.replay_file"></a>**<font color="#7fb800">replay_file</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**name**</font>, <font color="#00a6ed">**start**</font>, <font color="#00a6ed">**duration**</font>, <font color="#00a6ed">**follow_id**</font>)  
-Playback a file.  
+        - `filename` (_str_) – Name or absolute path of the file recorded, depending on your previous choice.  
+        - `show_all` (_bool_) – When true, will show all the details per frame (traffic light states, positions of all actors, orientation and animation data...), but by default it will only show a summary.  
+- <a name="carla.Client.start_recorder"></a>**<font color="#7fb800">start_recorder</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**filename**</font>)  
+Enables the recording feature, which will start saving every information possible needed by the server to replay the simulation.  
     - **Parameters:**
-        - `name` (_str_) – Name of the file.  
-        - `start` (_float_) – Time in seconds where to start the playback. If it is negative, then it starts from the end.  
-        - `duration` (_float_) – Id of the actor to follow. If this is 0 then camera is disabled.  
-        - `follow_id` (_int_)  
-- <a name="carla.Client.set_replayer_time_factor"></a>**<font color="#7fb800">set_replayer_time_factor</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**time_factor**</font>)  
-Apply a different playback speed to current playback. Can be used several times while a playback is in curse.  
-    - **Parameters:**
-        - `time_factor` (_float_) – A value of 1.0 means normal time factor. A value < 1.0 means slow motion (for example 0.5 is half speed) A value > 1.0 means fast motion (for example 2.0 is double speed).  
-- <a name="carla.Client.apply_batch"></a>**<font color="#7fb800">apply_batch</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**commands**</font>)  
-This function executes the whole list of commands on a single simulation step. For example, to set autopilot on some actors, we could use:   [sample_code](https://github.com/carla-simulator/carla/blob/10c5f6a482a21abfd00220c68c7f12b4110b7f63/PythonAPI/examples/spawn_npc.py#L126).   We don't have control about the response of each command. If we need that, we can use `apply_batch_sync()`.  
-    - **Parameters:**
-        - `commands` (_list_) – A list of commands to execute in batch. Each command has a different number of parameters. Currently, we can use these [commands](#command.ApplyAngularVelocity):  
-  SpawnActor  
-  DestroyActor  
-  ApplyVehicleControl  
-  ApplyWalkerControl  
-  ApplyTransform  
-  ApplyVelocity  
-  AplyAngularVelocity  
-  ApplyImpulse  
-  SetSimulatePhysics  
-  SetAutopilot.  
-- <a name="carla.Client.apply_batch_sync"></a>**<font color="#7fb800">apply_batch_sync</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**commands**</font>, <font color="#00a6ed">**due_tick_cue**</font>)  
-This function executes the whole list of commands on a single simulation step, blocks until the commands are executed, and returns a list of [`command.Response`](#command.Response) that can be used to determine whether a single command succeeded or not. [sample_code](https://github.com/carla-simulator/carla/blob/10c5f6a482a21abfd00220c68c7f12b4110b7f63/PythonAPI/examples/spawn_npc.py#L112-L116).  
-    - **Parameters:**
-        - `commands` (_list_) – A list of commands to execute in batch. For a list of commands available see function above apply_batch().  
-        - `due_tick_cue` (_bool_) – A boolean parameter to specify whether or not to perform a [carla.World.tick](#carla.World.tick) after applying the batch in _synchronous mode_.  
-    - **Return:** _list_  
+        - `filename` (_str_) – Name of the file to write the recorded data. A simple name will save the recording in 'CarlaUE4/Saved/recording.log'. Otherwise, if some folder appears in the name, it will be considered an absolute path.  
+- <a name="carla.Client.stop_recorder"></a>**<font color="#7fb800">stop_recorder</font>**(<font color="#00a6ed">**self**</font>)  
+Stops the recording in progress. If you specified a path in `filename`, the recording will be there. If not, look inside `CarlaUE4/Saved/`.  
 
 ---
 
@@ -648,7 +650,7 @@ Class that defines a lane marking.
 <h3>Instance Variables</h3>
 - <a name="carla.LaneMarking.type"></a>**<font color="#f8805a">type</font>** (_[carla.LaneMarkingType](#carla.LaneMarkingType)_)  
 Lane marking type.  
-- <a name="carla.LaneMarking.color"></a>**<font color="#f8805a">color</font>** (_[carla.Color](#carla.Color)_)  
+- <a name="carla.LaneMarking.color"></a>**<font color="#f8805a">color</font>** (_[carla.LaneMarkingColor](#carla.LaneMarkingColor)_)  
 Actual color of the marking.  
 - <a name="carla.LaneMarking.lane_change"></a>**<font color="#f8805a">lane_change</font>** (_[carla.LaneChange](#carla.LaneChange)_)  
 Lane change availability.  
@@ -1553,141 +1555,156 @@ WheelPhysicsControl constructor.
 ---
 
 ## carla.World<a name="carla.World"></a> <sub><sup>_class_</sup></sub>
-Class that contains the current loaded map.  
+World objects are created by the client to have a place for the simulation to happen. The world contains the map we can see, meaning the asset, not the navigation map. Navigation maps are part of the [carla.Map](#carla.Map) class. It also manages the weather and actors present in it. There can only be one world per simulation, but it can be changed anytime.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.World.id"></a>**<font color="#f8805a">id</font>** (_int_)  
-The id of the episode associated with this world.  
+The ID of the episode associated with this world. Episodes are different sessions of a simulation. These change everytime a world is disabled or reloaded. Keeping track is useful to avoid possible issues.  
 - <a name="carla.World.debug"></a>**<font color="#f8805a">debug</font>** (_[carla.DebugHelper](#carla.DebugHelper)_)  
+This object will help us creating different shapes for debugging. Take a look at its class to learn more about it.  
 
 <h3>Methods</h3>
-- <a name="carla.World.get_blueprint_library"></a>**<font color="#7fb800">get_blueprint_library</font>**(<font color="#00a6ed">**self**</font>)  
-Return the list of blueprints available in this world. These blueprints can be used to spawn actors into the world.  
-    - **Return:** _[carla.BlueprintLibrary](#carla.BlueprintLibrary)_  
-- <a name="carla.World.get_map"></a>**<font color="#7fb800">get_map</font>**(<font color="#00a6ed">**self**</font>)  
-Return the map that describes this world.  
-    - **Return:** _[carla.Map](#carla.Map)_  
-- <a name="carla.World.get_spectator"></a>**<font color="#7fb800">get_spectator</font>**(<font color="#00a6ed">**self**</font>)  
-Return the spectator actor. The spectator controls the view in the simulator window.  
-    - **Return:** _[carla.Actor](#carla.Actor)_  
-- <a name="carla.World.get_settings"></a>**<font color="#7fb800">get_settings</font>**(<font color="#00a6ed">**self**</font>)  
-    - **Return:** _[carla.WorldSettings](#carla.WorldSettings)_  
+- <a name="carla.World.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+The content of the world is parsed and printed as a brief report of its current state.  
+    - **Return:** _string_  
 - <a name="carla.World.apply_settings"></a>**<font color="#7fb800">apply_settings</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**world_settings**</font>)  
-Returns the id of the frame when the settings took effect.  
+This method applies settings contained in an object to the simulation running and returns the ID of the frame they were implemented.  
     - **Parameters:**
         - `world_settings` (_[carla.WorldSettings](#carla.WorldSettings)_)  
     - **Return:** _int_  
-- <a name="carla.World.get_weather"></a>**<font color="#7fb800">get_weather</font>**(<font color="#00a6ed">**self**</font>)  
-Retrieve the weather parameters currently active in the world.  
-    - **Return:** _[carla.WeatherParameters](#carla.WeatherParameters)_  
-- <a name="carla.World.set_weather"></a>**<font color="#7fb800">set_weather</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**weather**</font>)  
-Change the weather in the simulation.  
-    - **Parameters:**
-        - `weather` (_[carla.WeatherParameters](#carla.WeatherParameters)_)  
-- <a name="carla.World.get_snapshot"></a>**<font color="#7fb800">get_snapshot</font>**(<font color="#00a6ed">**self**</font>)  
-Return a snapshot of the world at this moment.  
-    - **Return:** _[carla.WorldSnapshot](#carla.WorldSnapshot)_  
 - <a name="carla.World.get_actor"></a>**<font color="#7fb800">get_actor</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**actor_id**</font>)  
-Find actor by id, return None if not found.  
+Looks up for an actor by ID and returns <b>None</b> if not found.  
     - **Parameters:**
         - `actor_id` (_int_)  
     - **Return:** _[carla.Actor](#carla.Actor)_  
-- <a name="carla.World.get_random_location_from_navigation"></a>**<font color="#7fb800">get_random_location_from_navigation</font>**(<font color="#00a6ed">**self**</font>)  
-Retrieve a random location to be used as a destination for walkers in [carla.WalkerAIController.go_to_location](#carla.WalkerAIController.go_to_location). See [`spawn_npc.py`](https://github.com/carla-simulator/carla/blob/e73ad54d182e743b50690ca00f1709b08b16528c/PythonAPI/examples/spawn_npc.py#L179) for an example.  
-    - **Return:** _[carla.Location](#carla.Location)_  
-- <a name="carla.World.get_actors"></a>**<font color="#7fb800">get_actors</font>**(<font color="#00a6ed">**self**</font>)  
-By default it returns a list with every actor present in the world. _A list of ids can be used as a parameter_.  
+- <a name="carla.World.get_actors"></a>**<font color="#7fb800">get_actors</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**actor_ids**=None</font>)  
+Retrieves a list of [carla.Actor](#carla.Actor) elements, either using a list of IDs provided or just listing everyone on stage. If an ID does not correspond with any actor, it will be excluded from the list returned, meaning that both the list of IDs and the list of actors may have different lengths.  
+    - **Parameters:**
+        - `actor_ids` (_list_) – The IDs of the actors being searched. By default it is set to <b>None</b> and returns every actor on scene.  
     - **Return:** _[carla.ActorList](#carla.ActorList)_  
-- <a name="carla.World.spawn_actor"></a>**<font color="#7fb800">spawn_actor</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**blueprint**</font>, <font color="#00a6ed">**transform**</font>, <font color="#00a6ed">**attach_to**=None</font>, <font color="#00a6ed">**attachment**=Rigid</font>)  
-Spawn an actor into the world based on the blueprint provided at transform. If a parent is provided, the actor is attached to parent.  
-    - **Parameters:**
-        - `blueprint` (_[carla.BlueprintLibrary](#carla.BlueprintLibrary)_)  
-        - `transform` (_[carla.Transform](#carla.Transform)_) – If attached to parent, transform acts like a relative_transform to the parent actor.  
-        - `attach_to` (_[carla.Actor](#carla.Actor)_)  
-        - `attachment` (_[carla.AttachmentType](#carla.AttachmentType)_)  
-    - **Return:** _[carla.Actor](#carla.Actor)_  
-- <a name="carla.World.try_spawn_actor"></a>**<font color="#7fb800">try_spawn_actor</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**blueprint**</font>, <font color="#00a6ed">**transform**</font>, <font color="#00a6ed">**attach_to**=None</font>, <font color="#00a6ed">**attachment**=Rigid</font>)  
-Same as SpawnActor but return none on failure instead of throwing an exception.  
-    - **Parameters:**
-        - `blueprint` (_[carla.BlueprintLibrary](#carla.BlueprintLibrary)_)  
-        - `transform` (_[carla.Transform](#carla.Transform)_) – If attached to parent, transform acts like a relative_transform to the parent actor.  
-        - `attach_to` (_[carla.Actor](#carla.Actor)_)  
-        - `attachment` (_[carla.AttachmentType](#carla.AttachmentType)_)  
-    - **Return:** _[carla.Actor](#carla.Actor)_  
-- <a name="carla.World.wait_for_tick"></a>**<font color="#7fb800">wait_for_tick</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**seconds**=10.0</font>)  
-Block calling thread until a world tick is received.  
-    - **Parameters:**
-        - `seconds` (_float_)  
+- <a name="carla.World.get_blueprint_library"></a>**<font color="#7fb800">get_blueprint_library</font>**(<font color="#00a6ed">**self**</font>)  
+Returns a list of actor blueprints available to ease the spawn of these into the world.  
+    - **Return:** _[carla.BlueprintLibrary](#carla.BlueprintLibrary)_  
+- <a name="carla.World.get_map"></a>**<font color="#7fb800">get_map</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the object containing the navigation map used to describe this world.  
+    - **Return:** _[carla.Map](#carla.Map)_  
+- <a name="carla.World.get_random_location_from_navigation"></a>**<font color="#7fb800">get_random_location_from_navigation</font>**(<font color="#00a6ed">**self**</font>)  
+This can only be used with walkers. It retrieves a random location to be used as a destination using the **<font color="#7fb800">go_to_location()</font>** method in [carla.WalkerAIController](#carla.WalkerAIController). This location will be part of a sidewalk. Roads, crosswalks and grass zones are excluded. The method does not take in consideration locations of existing actors so if a collision happens when trying to spawn an actor, it will return an error. Take a look at [`spawn_npc.py`](https://github.com/carla-simulator/carla/blob/e73ad54d182e743b50690ca00f1709b08b16528c/PythonAPI/examples/spawn_npc.py#L179) for an example.  
+    - **Return:** _[carla.Location](#carla.Location)_  
+- <a name="carla.World.get_snapshot"></a>**<font color="#7fb800">get_snapshot</font>**(<font color="#00a6ed">**self**</font>)  
+Returns a snapshot of the world at a certain moment comprising all the information about the actors.  
     - **Return:** _[carla.WorldSnapshot](#carla.WorldSnapshot)_  
+- <a name="carla.World.get_spectator"></a>**<font color="#7fb800">get_spectator</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the spectator actor. The spectator is a special type of actor created by Unreal Engine, usually with ID=0, that acts as a camera and controls the view in the simulator window.  
+    - **Return:** _[carla.Actor](#carla.Actor)_  
+- <a name="carla.World.get_settings"></a>**<font color="#7fb800">get_settings</font>**(<font color="#00a6ed">**self**</font>)  
+Returns an object containing some data about the simulation such as synchrony between client and server or rendering mode.  
+    - **Return:** _[carla.WorldSettings](#carla.WorldSettings)_  
+- <a name="carla.World.get_weather"></a>**<font color="#7fb800">get_weather</font>**(<font color="#00a6ed">**self**</font>)  
+Retrieves an object containing weather parameters currently active in the simulation, mainly cloudiness, precipitation, wind and sun position.  
+    - **Return:** _[carla.WeatherParameters](#carla.WeatherParameters)_  
 - <a name="carla.World.on_tick"></a>**<font color="#7fb800">on_tick</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**callback**</font>)  
-Returns the ID of the callback so it can be removed with `remove_on_tick`.  
+The method will start callbacks for a defined function `callback`. It will return the ID for this callback so it can be removed with **<font color="#7fb800">remove_on_tick()</font>**.  
     - **Parameters:**
-        - `callback` (_[carla.WorldSnapshot](#carla.WorldSnapshot)_)  
+        - `callback` (_[carla.WorldSnapshot](#carla.WorldSnapshot)_) – A defined function with a snapshot as compulsory parameter that will be called every tick.  
     - **Return:** _int_  
 - <a name="carla.World.remove_on_tick"></a>**<font color="#7fb800">remove_on_tick</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**callback_id**</font>)  
-Removes on tick callbacks.  
+Stops the callback for `callback_id` started with **<font color="#7fb800">on_tick()</font>**.  
+- <a name="carla.World.set_weather"></a>**<font color="#7fb800">set_weather</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**weather**</font>)  
+Changes the weather parameteres ruling the simulation to another ones defined in an object.  
+    - **Parameters:**
+        - `weather` (_[carla.WeatherParameters](#carla.WeatherParameters)_)  
+- <a name="carla.World.spawn_actor"></a>**<font color="#7fb800">spawn_actor</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**blueprint**</font>, <font color="#00a6ed">**transform**</font>, <font color="#00a6ed">**attach_to**=None</font>, <font color="#00a6ed">**attachment**=Rigid</font>)  
+The method will create, return and spawn an actor into the world. The actor will need an available blueprint to be created and a transform (location and rotation). It can also be attached to a parent with a certain attachment type.  
+    - **Parameters:**
+        - `blueprint` (_[carla.ActorBlueprint](#carla.ActorBlueprint)_) – The reference from which the actor will be created.  
+        - `transform` (_[carla.Transform](#carla.Transform)_) – Contains the location and orientation the actor will be spawned with.  
+        - `attach_to` (_[carla.Actor](#carla.Actor)_) – The parent object that the spawned actor will follow around.  
+        - `attachment` (_[carla.AttachmentType](#carla.AttachmentType)_) – Determines how fixed and rigorous should be the changes in position according to its parent object.  
+    - **Return:** _[carla.Actor](#carla.Actor)_  
 - <a name="carla.World.tick"></a>**<font color="#7fb800">tick</font>**(<font color="#00a6ed">**self**</font>)  
-Synchronizes with the simulator and returns the id of the newly started frame (only has effect on synchronous mode).  
+This only has effect on synchronous mode, when both client and server move together. The method tells the server when to step to the next frame and returns the id of the newly started frame.  
     - **Return:** _int_  
-- <a name="carla.World.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+- <a name="carla.World.try_spawn_actor"></a>**<font color="#7fb800">try_spawn_actor</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**blueprint**</font>, <font color="#00a6ed">**transform**</font>, <font color="#00a6ed">**attach_to**=None</font>, <font color="#00a6ed">**attachment**=Rigid</font>)  
+Same as **<font color="#7fb800">spawn_actor()</font>** but returns <b>None</b> on failure instead of throwing an exception.  
+    - **Parameters:**
+        - `blueprint` (_[carla.ActorBlueprint](#carla.ActorBlueprint)_) – The reference from which the actor will be created.  
+        - `transform` (_[carla.Transform](#carla.Transform)_) – Contains the location and orientation the actor will be spawned with.  
+        - `attach_to` (_[carla.Actor](#carla.Actor)_) – The parent object that the spawned actor will follow around.  
+        - `attachment` (_[carla.AttachmentType](#carla.AttachmentType)_) – Determines how fixed and rigorous should be the changes in position according to its parent object.  
+    - **Return:** _[carla.Actor](#carla.Actor)_  
+- <a name="carla.World.wait_for_tick"></a>**<font color="#7fb800">wait_for_tick</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**seconds**=10.0</font>)  
+The client tells the server to block calling thread until a **<font color="#7fb800">world_tick()</font>** is received.  
+    - **Parameters:**
+        - `seconds` (_float_) – Maximum time in seconds the server should wait for a tick. It is set to 10.0 by default.  
+    - **Return:** _[carla.WorldSnapshot](#carla.WorldSnapshot)_  
 
 ---
 
 ## carla.WorldSettings<a name="carla.WorldSettings"></a> <sub><sup>_class_</sup></sub>
-Class that provides access to modifiable world settings. Check it out in our [section](../configuring_the_simulation/).  
+The simulation has some advanced configuration options that are contained in this class and can be managed using [carla.World](#carla.World) and its methods. These allow the user to choose the synchrony/asynchrony between client and server, the activation of a no rendering mode and either if the simulation will run with a fixed or variable time-step. Check [this](../configuring_the_simulation/) out if you want to learn about it.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.WorldSettings.synchronous_mode"></a>**<font color="#f8805a">synchronous_mode</font>** (_bool_)  
+States the synchrony between client and server. When set to true, both will work together the simulation step by step. It is false by default.  
 - <a name="carla.WorldSettings.no_rendering_mode"></a>**<font color="#f8805a">no_rendering_mode</font>** (_bool_)  
+When enabled, the simulation will run no rendering at all. This is mainly used to avoid overhead during heavy traffic simulations. It is false by default.  
 - <a name="carla.WorldSettings.fixed_delta_seconds"></a>**<font color="#f8805a">fixed_delta_seconds</font>** (_float_)  
+Grants that the time elapsed between two steps of the simulation is fixed. Set this to <b>None</b> to work with a variable time-step, as happens by default.  
 
 <h3>Methods</h3>
-- <a name="carla.WorldSettings.__init__"></a>**<font color="#7fb800">\__init__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**synchronous_mode**=False</font>, <font color="#00a6ed">**no_rendering_mode**=False</font>, <font color="#00a6ed">**fixed_delta_seconds**=0.0</font>)  
+- <a name="carla.WorldSettings.__init__"></a>**<font color="#7fb800">\__init__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**synchronous_mode**</font>, <font color="#00a6ed">**no_rendering_mode**</font>, <font color="#00a6ed">**fixed_delta_seconds**</font>)  
+Create an object containing desired settings that could later be applied through [carla.World](#carla.World) and its method **<font color="#7fb800">apply_settings()</font>**.  
     - **Parameters:**
-        - `synchronous_mode` (_bool_)  
-        - `no_rendering_mode` (_bool_)  
-        - `fixed_delta_seconds` (_float_)  
+        - `synchronous_mode` (_bool_) – Set this to true to enable client-server synchrony.  
+        - `no_rendering_mode` (_bool_) – Set this to true to completely disable rendering in the simulation.  
+        - `fixed_delta_seconds` (_float_) – Set this time in seconds to get a fixed time-step in between frames.  
 - <a name="carla.WorldSettings.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Compares ........  
     - **Parameters:**
         - `other` (_[carla.Timestamp](#carla.Timestamp)_)  
 - <a name="carla.WorldSettings.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Creat......  
     - **Parameters:**
         - `other` (_[carla.Timestamp](#carla.Timestamp)_)  
 - <a name="carla.WorldSettings.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+Parses the settings established to a string and shows them in command line.  
 
 ---
 
 ## carla.WorldSnapshot<a name="carla.WorldSnapshot"></a> <sub><sup>_class_</sup></sub>
-Class that represents the state of every actor in the simulation at a single frame.  
+This object contains a list of [carla.ActorSnapshot](#carla.ActorSnapshot), which comprises all the information for every actor on scene at a certain moment of time.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.WorldSnapshot.id"></a>**<font color="#f8805a">id</font>** (_int_)  
-The WorldSnapshot's identifier.  
+A value unique for every snapshot to differenciate them.  
 - <a name="carla.WorldSnapshot.frame"></a>**<font color="#f8805a">frame</font>** (_int_)  
-Frame number.  
+Simulation frame in which the snapshot was taken.  
 - <a name="carla.WorldSnapshot.timestamp"></a>**<font color="#f8805a">timestamp</font>** (_[carla.Timestamp](#carla.Timestamp)_)  
-Timestamp simulated data.  
+Precise moment in time when snapshot was taken. This class works in seconds as given by the operative system.  
 
 <h3>Methods</h3>
 - <a name="carla.WorldSnapshot.has_actor"></a>**<font color="#7fb800">has_actor</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**actor_id**</font>)  
-Check if an actor is present in this snapshot.  
+Given a certain actor ID, checks if there is a snapshot corresponding it and so, if the actor was present at that moment.  
     - **Parameters:**
         - `actor_id` (_int_)  
 - <a name="carla.WorldSnapshot.find"></a>**<font color="#7fb800">find</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**actor_id**</font>)  
-Find an ActorSnapshot by id, return None if the actor is not found.  
+Given a certain actor ID, returns its corresponding snapshot or <b>None</b> if it is not found.  
     - **Parameters:**
         - `actor_id` (_int_)  
 - <a name="carla.WorldSnapshot.__len__"></a>**<font color="#7fb800">\__len__</font>**(<font color="#00a6ed">**self**</font>)  
 Return number of [carla.ActorSnapshot](#carla.ActorSnapshot) present in this [carla.WorldSnapshot](#carla.WorldSnapshot).  
     - **Return:** _int_  
 - <a name="carla.WorldSnapshot.__iter__"></a>**<font color="#7fb800">\__iter__</font>**(<font color="#00a6ed">**self**</font>)  
+Method that enables iteration for this class, using **<font color="#f8805a">timestamp</font>** as reference value.  
 - <a name="carla.WorldSnapshot.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Method that enables comparison between objects of this class, using **<font color="#f8805a">timestamp</font>** as reference value.  
     - **Parameters:**
         - `other` (_[carla.WorldSnapshot](#carla.WorldSnapshot)_)  
 - <a name="carla.WorldSnapshot.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Method that enables comparison between objects of this class, using **<font color="#f8805a">timestamp</font>** as reference value.  
     - **Parameters:**
         - `other` (_[carla.WorldSnapshot](#carla.WorldSnapshot)_)  
-- <a name="carla.WorldSnapshot.__self__"></a>**<font color="#7fb800">\__self__</font>**(<font color="#00a6ed">**self**</font>)  
 
 ---
 
@@ -1782,7 +1799,7 @@ Apply control to the walker.
 <h3>Instance Variables</h3>
 - <a name="command.ApplyWalkerControl.actor_id"></a>**<font color="#f8805a">actor_id</font>** (_int_)  
 Walker actor affected by the command.  
-- <a name="command.ApplyWalkerControl.control"></a>**<font color="#f8805a">control</font>** (_[carla.VehicleControl](#carla.VehicleControl)_)  
+- <a name="command.ApplyWalkerControl.control"></a>**<font color="#f8805a">control</font>** (_[carla.WalkerControl](#carla.WalkerControl)_)  
 Walker control to be applied.  
 
 <h3>Methods</h3>

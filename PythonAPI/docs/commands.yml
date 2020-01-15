@@ -128,7 +128,7 @@
       doc: >
         Walker actor affected by the command
     - var_name: control
-      type: carla.VehicleControl
+      type: carla.WalkerControl
       doc: >
         Walker control to be applied
     # - METHODS ----------------------------

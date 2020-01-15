@@ -241,7 +241,7 @@
       doc: >
         Lane marking type
     - var_name: color
-      type: carla.Color
+      type: carla.LaneMarkingColor
       doc: >
         Actual color of the marking
     - var_name: lane_change

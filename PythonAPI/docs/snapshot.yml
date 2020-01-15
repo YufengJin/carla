@@ -2,26 +2,26 @@
 - module_name: carla
   doc: >
   # - CLASSES ------------------------------
+
   classes:
   - class_name: WorldSnapshot
     # - DESCRIPTION ------------------------
     doc: >
-      Class that represents the state of every actor
-      in the simulation at a single frame
+      This object contains a list of carla.ActorSnapshot, which comprises all the information for every actor on scene at a certain moment of time. 
     # - PROPERTIES -------------------------
     instance_variables:
     - var_name: id
       type: int
       doc: >
-        The WorldSnapshot's identifier
+        A value unique for every snapshot to differenciate them. 
     - var_name: frame
       type: int
       doc: >
-        Frame number
+        Simulation frame in which the snapshot was taken. 
     - var_name: timestamp
       type: carla.Timestamp
       doc: >
-         Timestamp simulated data
+         Precise moment in time when snapshot was taken. This class works in seconds as given by the operative system. 
     # - METHODS ----------------------------
     methods:
     - def_name: has_actor
@@ -29,7 +29,7 @@
         - param_name: actor_id
           type: int
       doc: >
-        Check if an actor is present in this snapshot.
+        Given a certain actor ID, checks if there is a snapshot corresponding it and so, if the actor was present at that moment.
     # --------------------------------------
     - def_name: find
       return: 
@@ -37,7 +37,7 @@
         - param_name: actor_id
           type: int
       doc: > 
-        Find an ActorSnapshot by id, return None if the actor is not found.
+        Given a certain actor ID, returns its corresponding snapshot or <b>None</b> if it is not found. 
     # --------------------------------------
     - def_name: __len__
       return: int
@@ -46,21 +46,21 @@
     # --------------------------------------
     - def_name: __iter__
       doc: >
+        Method that enables iteration for this class, using **<font color="#f8805a">timestamp</font>** as reference value. 
     # --------------------------------------
     - def_name: __eq__
       params:
         - param_name: other
           type: carla.WorldSnapshot
       doc: >
+        Method that enables comparison between objects of this class, using **<font color="#f8805a">timestamp</font>** as reference value. 
     # --------------------------------------
     - def_name: __ne__
       params:
         - param_name: other
           type: carla.WorldSnapshot
       doc: >
-    # --------------------------------------
-    - def_name: __self__
-      doc: >
+        Method that enables comparison between objects of this class, using **<font color="#f8805a">timestamp</font>** as reference value. 
     # --------------------------------------
     
   - class_name: ActorSnapshot
