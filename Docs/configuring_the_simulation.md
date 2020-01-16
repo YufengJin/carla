@@ -56,6 +56,13 @@ and the difference between qualities.
 
 **Low mode runs significantly faster**, ideal for users that don't rely on quality precision.
 
+There was a bug that caused <b>Epic</b> mode to render with an abnormal whiteness on screen. The issue has been fixed, but it may still show due to a remnant file storing last quality settings used. This can be easily solved by deleting <b>GameUserSettings.ini</b>, which will be regenerated next run. To find said file look at:  
+Windows:  
+`<Packagefolder>\WindowsNoEditor\CarlaUE4\Saved\Config\WindowsNoEditor\GameUserSettings.in`  
+Ubuntu:  
+ `~/.config/Epic/CarlaUE4/Saved/Config/LinuxNoEditor/GameUserSettings.ini`
+
+
 Running off-screen
 ------------------
 

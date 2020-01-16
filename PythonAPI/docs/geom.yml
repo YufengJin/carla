@@ -30,47 +30,43 @@
       params:
       - param_name: other
         type: carla.Vector2D
-      return: carla.Vector2D
       doc: >
-        Returns the resulting vector from adding values for each axis.
+        Defines addition between 2D vectors and applies it to this.
     # --------------------------------------
     - def_name: __sub__
       params:
       - param_name: other
         type: carla.Vector2D
-      return: carla.Vector2D
       doc: >
-        Returns the resulting vector from substracting values for each axis.
+        Defines substraction between 2D vectors and applies it to this.
     # --------------------------------------
     - def_name: __mul__
       params:
       - param_name: other
         type: carla.Vector2D
-      return: carla.Vector2D
       doc: >
-        Returns the resulting vector from multiplying values for each axis.
+        Defines multiplication between 2D vectors and applies it to this.
     # --------------------------------------
     - def_name: __truediv__
       params:
       - param_name: other
         type: carla.Vector2D
-      return: carla.Vector2D
       doc: >
-        Returns the resulting vector from dividing values for each axis.
+        Defines division between 2D vectors and applies it to this.
     # --------------------------------------
     - def_name: __eq__
+      return: bool
       params:
       - param_name: other
         type: carla.Vector2D
-      return: bool
       doc: >
         Returns true if values for every axis are equal. 
     # --------------------------------------
     - def_name: __ne__
+      return: bool
       params:
       - param_name: bool
         type: carla.Vector2D
-      return: bool
       doc: >
         Returns true if the value for any axis is different. 
     # --------------------------------------
@@ -116,33 +112,29 @@
       params:
       - param_name: other
         type: carla.Vector3D
-      return: carla.Vector3D
       doc: >
-        Returns the resulting vector from adding values for each axis.
-    # --------------------------------------
-    - def_name: __mul__
-      params:
-      - param_name: other
-        type: carla.Vector3D
-      return: carla.Vector3D
-      doc: >
-        Returns the resulting vector from adding values for each axis.
+        Defines addition between 3D vectors and applies it to this.
     # --------------------------------------
     - def_name: __sub__
       params:
       - param_name: other
         type: carla.Vector3D
-      return: carla.Vector3D
       doc: >
-        Returns the resulting vector from adding values for each axis.
+        Defines substraction between 3D vectors and applies it to this.
+    # --------------------------------------
+    - def_name: __mul__
+      params:
+      - param_name: other
+        type: carla.Vector3D
+      doc: >
+        Defines multiplication between 3D vectors and applies it to this.
     # --------------------------------------
     - def_name: __truediv__
       params:
       - param_name: other
         type: carla.Vector3D
-      return: carla.Vector3D
       doc: >
-        Returns the resulting vector from adding values for each axis.
+        Defines division between 3D vectors and applies it to this.
     # --------------------------------------
     - def_name: __eq__
       params:
@@ -161,6 +153,7 @@
         Returns true if the value for any axis is different. 
     # --------------------------------------
     - def_name: __str__
+      return: str
       doc: >
         Returns the axis values for the vector parsed as string. 
     # --------------------------------------
@@ -310,13 +303,13 @@
   - class_name: Transform
     # - DESCRIPTION ------------------------
     doc: >
-      Class that defines a transformation without scaling. It is used to described an actor's position and rotation. 
+      Class that defines a transformation, a combination of location and rotation, without scaling. 
     # - PROPERTIES -------------------------
     instance_variables:
     - var_name: location
       type: carla.Location
       doc: >
-        Describes a point in the map. 
+        Describes a point in the coordinate system. 
     - var_name: rotation
       type: carla.Rotation
       doc: >
@@ -344,7 +337,7 @@
       - param_name: other
         type: carla.Transform
       doc: >
-        Returns true if both location and rotation are not equal for this and `other`.
+        Returns true if any location and rotation are not equal for this and `other`.
     # --------------------------------------
     - def_name: __str__
       return: str
@@ -363,13 +356,13 @@
         doc: >
           Location in the space to which the transformation will be applied.
       doc: >
-        Transform a 3D point using the current transformation.
+        Translates a 3D point from global to local coordinates using the current transformation as frame of reference.
     # --------------------------------------
 
   - class_name: BoundingBox
     # - DESCRIPTION ------------------------
     doc: >
-      Bounding box helper class.
+      Helper class defining a box location and its dimensions that will later be used by carla.DebugHelper to draw shapes. Bounding boxes normally act for object colliders. Check out this [recipe](../python_cookbook/#debug-bounding-box-recipe) where the user takes a snapshot of the world and then proceeds to draw bounding boxes for traffic lights. 
     # - PROPERTIES -------------------------
     instance_variables:
     - var_name: location
@@ -379,29 +372,40 @@
     - var_name: extent
       type: carla.Vector3D
       doc: >
-        It contains the vector from the center of the bounding box to one of the vertex of the box.  
-
-        So, if you want to know the _X bounding box size_, you can just do `extent.x * 2`
+        Vector from the center of the box to one vertex. The value in each axis equals half the size of the box for that axis. `extent.x * 2` would return the size of the box in the X-axis. 
     # - METHODS ----------------------------
     methods:
     - def_name: __init__
       params:
       - param_name: location
         type: carla.Location
+        doc: >
+          Point to center the box. 
       - param_name: extent
         type: carla.Vector3D
+        doc: >
+          Vector containing half the size of the box for each axis.
     # --------------------------------------
     - def_name: __eq__
+      return: bool
       params:
       - param_name: other
         type: carla.BoundingBox
+      doc: >
+        Returns true if both location and extent are equal for this and `other`.
     # --------------------------------------
     - def_name: __ne__
+      return: bool
       params:
       - param_name: other
         type: carla.BoundingBox
+      doc: >
+        Returns true if any location and extent are different for this and `other`.
     # --------------------------------------
     - def_name: __str__
+      return: str
+      doc: >
+        Parses the location and extent of the bounding box to string.
     # --------------------------------------
 
   - class_name: GeoLocation

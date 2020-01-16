@@ -1,209 +1,213 @@
 ## carla.Actor<a name="carla.Actor"></a> <sub><sup>_class_</sup></sub>
-Base class for all actors.
-Actor is anything that plays a role in the simulation and can be moved around, examples of actors are vehicles, pedestrians, and sensors.  
+CARLA defines actors as anything that plays a role in the simulation and can be moved around. That includes: pedestrians, vehicles, sensors and traffic signs (considering traffic lights as part of these). Actors are spawned in the simulation by [carla.World](#carla.World) and they need for a [carla.ActorBlueprint](#carla.ActorBlueprint) to be created. These blueprints belong into a library provided by CARLA, find more about them [here](../bp_library/).  
 
 <h3>Instance Variables</h3>
-- <a name="carla.Actor.id"></a>**<font color="#f8805a">id</font>** (_int_)  
-Unique id identifying this actor. Note ids are unique during a given episode.  
-- <a name="carla.Actor.type_id"></a>**<font color="#f8805a">type_id</font>** (_str_)  
-Id of the blueprint that created this actor, e.g. "vehicle.ford.mustang".  
-- <a name="carla.Actor.parent"></a>**<font color="#f8805a">parent</font>** (_[carla.Actor](#carla.Actor)_)  
-Parent actor of this instance, None if this instance is not attached to another actor.  
-- <a name="carla.Actor.semantic_tags"></a>**<font color="#f8805a">semantic_tags</font>** (_list(int)_)  
-List of semantic tags of all components of this actor, see semantic segmentation sensor for the list of available tags. E.g., a traffic light actor could contain "pole" and "traffic light" tags.  
-- <a name="carla.Actor.is_alive"></a>**<font color="#f8805a">is_alive</font>** (_bool_)  
-Returns whether this object was destroyed using this actor handle.  
 - <a name="carla.Actor.attributes"></a>**<font color="#f8805a">attributes</font>** (_dict_)  
-Dictionary of attributes of the blueprint that created this actor.  
+A dictionary containing the attributes of the blueprint this actor was based on.  
+- <a name="carla.Actor.id"></a>**<font color="#f8805a">id</font>** (_int_)  
+Identifier for this actor. Unique during a given episode.  
+- <a name="carla.Actor.parent"></a>**<font color="#f8805a">parent</font>** (_[carla.Actor](#carla.Actor)_)  
+Actors may be attached to a parent actor that they will follow around. This is said actor.  
+- <a name="carla.Actor.semantic_tags"></a>**<font color="#f8805a">semantic_tags</font>** (_list(int)_)  
+A list of semantic tags provided by the blueprint listing components for this actor. E.g. a traffic light could be tagged with "pole" and "traffic light". These tags are used by the semantic segmentation sensor. Find more about this and other sensors [here](../cameras_and_sensors/#sensor.camera.semantic_segmentation).  
+- <a name="carla.Actor.type_id"></a>**<font color="#f8805a">type_id</font>** (_str_)  
+The identifier of the blueprint this actor was based on, e.g. "vehicle.ford.mustang".  
 
 <h3>Methods</h3>
+- <a name="carla.Actor.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+Parses a summary of this actor's information to string.  
+    - **Return:** _str_  
+- <a name="carla.Actor.add_impulse"></a>**<font color="#7fb800">add_impulse</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**impulse**</font>)  
+Adds an impulse to the actor.  
+    - **Parameters:**
+        - `impulse` (_[carla.Vector3D](#carla.Vector3D)_)  
 - <a name="carla.Actor.destroy"></a>**<font color="#7fb800">destroy</font>**(<font color="#00a6ed">**self**</font>)  
-Tell the simulator to destroy this Actor, and return whether the actor was successfully destroyed. It has no effect if the Actor was already successfully destroyed.  
+Tells the simulator to destroy this actor and returns <b>True</b> if it was successful. It has no effect if it was already destroyed.  
     - **Return:** _bool_  
-    - **Warning:** <font color="#ED2F2F">_This function blocks until the destruction operation is completed by the simulator.
+    - **Warning:** <font color="#ED2F2F">_This method blocks the script until the destruction is completed by the simulator.
 _</font>  
+- <a name="carla.Actor.get_acceleration"></a>**<font color="#7fb800">get_acceleration</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the actor's 3D acceleration vector the client recieved during last tick.  
+    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
+- <a name="carla.Actor.get_angular_velocity"></a>**<font color="#7fb800">get_angular_velocity</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the actor's angular velocity vector the client recieved during last tick.  
+    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
+- <a name="carla.Actor.get_location"></a>**<font color="#7fb800">get_location</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the actor's location the client recieved during last tick.  
+    - **Return:** _[carla.Location](#carla.Location)_  
+- <a name="carla.Actor.get_transform"></a>**<font color="#7fb800">get_transform</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the actor's transform (location and rotation) the client recieved during last tick.  
+    - **Return:** _[carla.Transform](#carla.Transform)_  
+- <a name="carla.Actor.get_velocity"></a>**<font color="#7fb800">get_velocity</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the actor's velocity vector the client recieved during last tick.  
+    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
 - <a name="carla.Actor.get_world"></a>**<font color="#7fb800">get_world</font>**(<font color="#00a6ed">**self**</font>)  
 Returns the world this actor belongs to.  
     - **Return:** _[carla.World](#carla.World)_  
-- <a name="carla.Actor.get_location"></a>**<font color="#7fb800">get_location</font>**(<font color="#00a6ed">**self**</font>)  
-Returns the actor's current location.  
-    - **Return:** _[carla.Location](#carla.Location)_  
-    - **Note:** <font color="#8E8E8E">_This function does not call the simulator, it returns the location received in the last tick.
-_</font>  
-- <a name="carla.Actor.get_transform"></a>**<font color="#7fb800">get_transform</font>**(<font color="#00a6ed">**self**</font>)  
-Returns the actor's current transform.  
-    - **Return:** _[carla.Transform](#carla.Transform)_  
-    - **Note:** <font color="#8E8E8E">_This function does not call the simulator, it returns the transform received in the last tick.
-_</font>  
-- <a name="carla.Actor.get_velocity"></a>**<font color="#7fb800">get_velocity</font>**(<font color="#00a6ed">**self**</font>)  
-Returns the actor's current 3D velocity.  
-    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
-    - **Note:** <font color="#8E8E8E">_This function does not call the simulator, it returns the velocity received in the last tick.
-_</font>  
-- <a name="carla.Actor.get_angular_velocity"></a>**<font color="#7fb800">get_angular_velocity</font>**(<font color="#00a6ed">**self**</font>)  
-Returns the actor's current 3D angular velocity.  
-    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
-    - **Note:** <font color="#8E8E8E">_This function does not call the simulator, it returns the angular velocity received in the last tick.
-_</font>  
-- <a name="carla.Actor.get_acceleration"></a>**<font color="#7fb800">get_acceleration</font>**(<font color="#00a6ed">**self**</font>)  
-Returns the actor's current 3D acceleration.  
-    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
-    - **Note:** <font color="#8E8E8E">_This function does not call the simulator, it returns the acceleration received in the last tick.
-_</font>  
+- <a name="carla.Actor.set_angular_velocity"></a>**<font color="#7fb800">set_angular_velocity</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**angular_velocity**</font>)  
+Changes the actor's angular velocity vector.  
+    - **Parameters:**
+        - `angular_velocity` (_[carla.Vector3D](#carla.Vector3D)_)  
 - <a name="carla.Actor.set_location"></a>**<font color="#7fb800">set_location</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**location**</font>)  
-Teleport the actor to a given location.  
+Teleports the actor to a given location.  
     - **Parameters:**
         - `location` (_[carla.Location](#carla.Location)_)  
+- <a name="carla.Actor.set_simulate_physics"></a>**<font color="#7fb800">set_simulate_physics</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**enabled**=True</font>)  
+Enables or disables the simulation of physics on this actor.  
+    - **Parameters:**
+        - `enabled` (_bool_)  
 - <a name="carla.Actor.set_transform"></a>**<font color="#7fb800">set_transform</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**transform**</font>)  
-Teleport the actor to a given transform.  
+Teleports the actor to a given transform (location and rotation).  
     - **Parameters:**
         - `transform` (_[carla.Transform](#carla.Transform)_)  
 - <a name="carla.Actor.set_velocity"></a>**<font color="#7fb800">set_velocity</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**velocity**</font>)  
-Set the actor's velocity.  
+Sets the actor's velocity vector.  
     - **Parameters:**
         - `velocity` (_[carla.Vector3D](#carla.Vector3D)_)  
-- <a name="carla.Actor.set_angular_velocity"></a>**<font color="#7fb800">set_angular_velocity</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**angular_velocity**</font>)  
-Set the actor's angular velocity.  
-    - **Parameters:**
-        - `angular_velocity` (_[carla.Vector3D](#carla.Vector3D)_)  
-- <a name="carla.Actor.add_impulse"></a>**<font color="#7fb800">add_impulse</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**impulse**</font>)  
-Add impulse to the actor.  
-    - **Parameters:**
-        - `impulse` (_[carla.Vector3D](#carla.Vector3D)_)  
-- <a name="carla.Actor.set_simulate_physics"></a>**<font color="#7fb800">set_simulate_physics</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**enabled**=True</font>)  
-Enable or disable physics simulation on this actor.  
-    - **Parameters:**
-        - `enabled` (_bool_)  
-- <a name="carla.Actor.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
-    - **Return:** _str_  
 
 ---
 
 ## carla.ActorAttribute<a name="carla.ActorAttribute"></a> <sub><sup>_class_</sup></sub>
-Class that defines an attribute of a [carla.ActorBlueprint](#carla.ActorBlueprint).  
+CARLA provides a library of blueprints for actors that can be accessed as [carla.BlueprintLibrary](#carla.BlueprintLibrary). Each of these blueprints has a series of attributes defined internally. Some of these are modifiable, others are not. A list of recommended values is provided for those that can be set.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.ActorAttribute.id"></a>**<font color="#f8805a">id</font>** (_str_)  
-The attribute's identifier.  
+The attribute's name and identifier in the library.  
 - <a name="carla.ActorAttribute.type"></a>**<font color="#f8805a">type</font>** (_[carla.ActorAttributeType](#carla.ActorAttributeType)_)  
-The attribute parameter type.  
+The attribute's parameter type.  
 - <a name="carla.ActorAttribute.recommended_values"></a>**<font color="#f8805a">recommended_values</font>** (_list(str)_)  
-List of recommended values that the attribute may have.  
+A list of values suggested by those who designed the blueprint.  
 - <a name="carla.ActorAttribute.is_modifiable"></a>**<font color="#f8805a">is_modifiable</font>** (_bool_)  
-True if the attribute is modifiable.  
+It is <b>True</b> if the attribute's value can be modified.  
 
 <h3>Methods</h3>
 - <a name="carla.ActorAttribute.as_bool"></a>**<font color="#7fb800">as_bool</font>**(<font color="#00a6ed">**self**</font>)  
-- <a name="carla.ActorAttribute.as_int"></a>**<font color="#7fb800">as_int</font>**(<font color="#00a6ed">**self**</font>)  
-- <a name="carla.ActorAttribute.as_float"></a>**<font color="#7fb800">as_float</font>**(<font color="#00a6ed">**self**</font>)  
-- <a name="carla.ActorAttribute.as_str"></a>**<font color="#7fb800">as_str</font>**(<font color="#00a6ed">**self**</font>)  
 - <a name="carla.ActorAttribute.as_color"></a>**<font color="#7fb800">as_color</font>**(<font color="#00a6ed">**self**</font>)  
-- <a name="carla.ActorAttribute.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-    - **Parameters:**
-        - `other` (_bool / int / float / str / [carla.Color](#carla.Color) / [carla.ActorAttribute](#carla.ActorAttribute)_)  
-- <a name="carla.ActorAttribute.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-    - **Parameters:**
-        - `other` (_bool / int / float / str / [carla.Color](#carla.Color) / [carla.ActorAttribute](#carla.ActorAttribute)_)  
-- <a name="carla.ActorAttribute.__nonzero__"></a>**<font color="#7fb800">\__nonzero__</font>**(<font color="#00a6ed">**self**</font>)  
+Converts the attribute to [carla.Color](#carla.Color).  
+- <a name="carla.ActorAttribute.as_int"></a>**<font color="#7fb800">as_int</font>**(<font color="#00a6ed">**self**</font>)  
+Converts the attribute to int.  
+- <a name="carla.ActorAttribute.as_float"></a>**<font color="#7fb800">as_float</font>**(<font color="#00a6ed">**self**</font>)  
+Converts the attribute to float.  
+- <a name="carla.ActorAttribute.as_str"></a>**<font color="#7fb800">as_str</font>**(<font color="#00a6ed">**self**</font>)  
+Converts the attribute to string.  
 - <a name="carla.ActorAttribute.__bool__"></a>**<font color="#7fb800">\__bool__</font>**(<font color="#00a6ed">**self**</font>)  
+Internal method to manage the attribute as bool.  
 - <a name="carla.ActorAttribute.__int__"></a>**<font color="#7fb800">\__int__</font>**(<font color="#00a6ed">**self**</font>)  
+Internal method to manage the attribute as int.  
 - <a name="carla.ActorAttribute.__float__"></a>**<font color="#7fb800">\__float__</font>**(<font color="#00a6ed">**self**</font>)  
+Internal method to manage the attribute as float.  
 - <a name="carla.ActorAttribute.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
-- <a name="carla.ActorAttribute.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+Parses the attribute ID and its value to string.  
+- <a name="carla.ActorAttribute.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns true if this actor's attribute and `other` are the same.  
+    - **Parameters:**
+        - `other` (_bool / int / float / str / [carla.Color](#carla.Color) / [carla.ActorAttribute](#carla.ActorAttribute)_)  
+    - **Return:** _bool_  
+- <a name="carla.ActorAttribute.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns true if this actor's attribute and `other` are different.  
+    - **Parameters:**
+        - `other` (_bool / int / float / str / [carla.Color](#carla.Color) / [carla.ActorAttribute](#carla.ActorAttribute)_)  
+    - **Return:** _bool_  
+- <a name="carla.ActorAttribute.__nonzero__"></a>**<font color="#7fb800">\__nonzero__</font>**(<font color="#00a6ed">**self**</font>)  
+Returns true if this actor's attribute is not zero or null.  
+    - **Return:** _bool_  
 
 ---
 
 ## carla.ActorAttributeType<a name="carla.ActorAttributeType"></a> <sub><sup>_class_</sup></sub>
-Class that defines the type of attribute of a [carla.ActorAttribute](#carla.ActorAttribute).  
+CARLA provides a library of blueprints for actors in [carla.BlueprintLibrary](#carla.BlueprintLibrary) with different attributes each. This class defines the types those at [carla.ActorAttribute](#carla.ActorAttribute) can be as a series of enum. All this information is managed internally and listed here for a better comprehension of how CARLA works.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.ActorAttributeType.Bool"></a>**<font color="#f8805a">Bool</font>**  
 - <a name="carla.ActorAttributeType.Int"></a>**<font color="#f8805a">Int</font>**  
 - <a name="carla.ActorAttributeType.Float"></a>**<font color="#f8805a">Float</font>**  
-- <a name="carla.ActorAttributeType.String"></a>**<font color="#f8805a">String</font>**  
 - <a name="carla.ActorAttributeType.RGBColor"></a>**<font color="#f8805a">RGBColor</font>**  
+- <a name="carla.ActorAttributeType.String"></a>**<font color="#f8805a">String</font>**  
 
 ---
 
 ## carla.ActorBlueprint<a name="carla.ActorBlueprint"></a> <sub><sup>_class_</sup></sub>
-Class that contains all the necessary information for spawning an Actor.  
+CARLA provides a blueprint library for actors that can be consulted through [carla.BlueprintLibrary](#carla.BlueprintLibrary). Each of these consists of an identifier for the blueprint and a series of attributes that may be modifiable or not. This class is the intermediate step between the library and the actor creation. Actors need an actor blueprint to be spawned. These store the information for said blueprint in an object with its attributes and some tags to categorize them. The user can then custom some attributes and eventually spawn the actors through [carla.World](#carla.World).  
 
 <h3>Instance Variables</h3>
 - <a name="carla.ActorBlueprint.id"></a>**<font color="#f8805a">id</font>** (_str_)  
-Actor blueprint identifier, e.g. `walker.pedestrian.0001`.  
+The identifier of said blueprint inside the library. E.g. `walker.pedestrian.0001`.  
 - <a name="carla.ActorBlueprint.tags"></a>**<font color="#f8805a">tags</font>** (_list(str)_)  
-List of tags of an actor blueprint e.g. `['0001', 'pedestrian', 'walker']`.  
+A list of tags each blueprint has that helps describing them. E.g. `['0001', 'pedestrian', 'walker']`.  
 
 <h3>Methods</h3>
+- <a name="carla.ActorBlueprint.__iter__"></a>**<font color="#7fb800">\__iter__</font>**(<font color="#00a6ed">**self**</font>)  
+Allows iteration within this class.  
+- <a name="carla.ActorBlueprint.__len__"></a>**<font color="#7fb800">\__len__</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the amount of attributes for this blueprint.  
+- <a name="carla.ActorBlueprint.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+Parses the information of this blueprint to string.  
+- <a name="carla.ActorBlueprint.has_attribute"></a>**<font color="#7fb800">has_attribute</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**id**</font>)  
+Returns <b>True</b> if the blueprint contains the attribute `id`.  
+    - **Parameters:**
+        - `id` (_str_) – e.g. 'gender'.  
+    - **Return:** _bool_  
 - <a name="carla.ActorBlueprint.has_tag"></a>**<font color="#7fb800">has_tag</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**tag**</font>)  
-Returns `true` if an actor blueprint has the tag.  
+Returns <b>True</b> if the blueprint has `tag` listed.  
     - **Parameters:**
         - `tag` (_str_) – e.g. 'walker'.  
     - **Return:** _bool_  
 - <a name="carla.ActorBlueprint.match_tags"></a>**<font color="#7fb800">match_tags</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**wildcard_pattern**</font>)  
-Test if any of the flags or id matches wildcard_pattern.  
+Returns <b>True</b> if any of the tags listed for this blueprint matches `wildcard_pattern`. Matching follows [fnmatch](https://docs.python.org/2/library/fnmatch.html) standard.  
     - **Parameters:**
         - `wildcard_pattern` (_str_)  
     - **Return:** _bool_  
-    - **Note:** <font color="#8E8E8E">_The wildcard_pattern follows Unix shell-style wildcards.
-_</font>  
-- <a name="carla.ActorBlueprint.has_attribute"></a>**<font color="#7fb800">has_attribute</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**id**</font>)  
-Returns `true` if the blueprint contains the specified attribute.  
-    - **Parameters:**
-        - `id` (_str_) – e.g 'gender'.  
-    - **Return:** _bool_  
 - <a name="carla.ActorBlueprint.get_attribute"></a>**<font color="#7fb800">get_attribute</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**id**</font>)  
-Returns the current actor attribute through its id.  
+Returns the actor's attribute with `id` as identifier if existing.  
     - **Parameters:**
         - `id` (_str_)  
     - **Return:** _[carla.ActorAttribute](#carla.ActorAttribute)_  
 - <a name="carla.ActorBlueprint.set_attribute"></a>**<font color="#7fb800">set_attribute</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**id**</font>, <font color="#00a6ed">**value**</font>)  
-Sets an existing attribute to the actor's blueprint.  
+If the `id` attribute is modifiable, changes its value to `value`.  
     - **Parameters:**
-        - `id` (_str_)  
-        - `value` (_str_)  
-    - **Note:** <font color="#8E8E8E">_Attribute can only be set or changed if it is modifiable
-_</font>  
-- <a name="carla.ActorBlueprint.__len__"></a>**<font color="#7fb800">\__len__</font>**(<font color="#00a6ed">**self**</font>)  
-- <a name="carla.ActorBlueprint.__iter__"></a>**<font color="#7fb800">\__iter__</font>**(<font color="#00a6ed">**self**</font>)  
-- <a name="carla.ActorBlueprint.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+        - `id` (_str_) – The identifier for the attribute that is intended to be changed.  
+        - `value` (_str_) – The new value for said attribute.  
 
 ---
 
 ## carla.ActorList<a name="carla.ActorList"></a> <sub><sup>_class_</sup></sub>
-A class that contains every actor present on the scene and provides acces to them.  
+A class that contains every actor present on the scene and provides access to them. The list is automatically created and updated by the server and it can be returned using [carla.World](#carla.World).  
 
 <h3>Methods</h3>
-- <a name="carla.ActorList.find"></a>**<font color="#7fb800">find</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**actor_id**</font>)  
-Finds an actor using its identifier and returns it or <b>None</b> if it is not present.  
-    - **Parameters:**
-        - `actor_id` (_int_)  
-- <a name="carla.ActorList.filter"></a>**<font color="#7fb800">filter</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**wildcard_pattern**</font>)  
-Filters a list of Actors matching `wildcard_pattern` against their variable **<font color="#f8805a">type_id</font>** (which identifies the blueprint used to spawn them). Matching follows [fnmatch](https://docs.python.org/2/library/fnmatch.html) standard.  
-    - **Parameters:**
-        - `wildcard_pattern` (_str_)  
 - <a name="carla.ActorList.__getitem__"></a>**<font color="#7fb800">\__getitem__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**pos**</font>)  
 Returns the actor corresponding to `pos` position in the list.  
     - **Parameters:**
         - `pos` (_int_)  
-- <a name="carla.ActorList.__len__"></a>**<font color="#7fb800">\__len__</font>**(<font color="#00a6ed">**self**</font>)  
-Returns the amount of actors listed.  
+    - **Return:** _[carla.Actor](#carla.Actor)_  
 - <a name="carla.ActorList.__iter__"></a>**<font color="#7fb800">\__iter__</font>**(<font color="#00a6ed">**self**</font>)  
 Allows the iteration for this object.  
+- <a name="carla.ActorList.__len__"></a>**<font color="#7fb800">\__len__</font>**(<font color="#00a6ed">**self**</font>)  
+Returns the amount of actors listed.  
+    - **Return:** _int_  
 - <a name="carla.ActorList.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
-Parses the information comprised for every actor and shows it on screen.  
+Parses to the ID for every actor listed.  
+    - **Return:** _str_  
+- <a name="carla.ActorList.filter"></a>**<font color="#7fb800">filter</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**wildcard_pattern**</font>)  
+Filters a list of Actors matching `wildcard_pattern` against their variable **<font color="#f8805a">type_id</font>** (which identifies the blueprint used to spawn them). Matching follows [fnmatch](https://docs.python.org/2/library/fnmatch.html) standard.  
+    - **Parameters:**
+        - `wildcard_pattern` (_str_)  
+    - **Return:** _list_  
+- <a name="carla.ActorList.find"></a>**<font color="#7fb800">find</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**actor_id**</font>)  
+Finds an actor using its identifier and returns it or <b>None</b> if it is not present.  
+    - **Parameters:**
+        - `actor_id` (_int_)  
+    - **Return:** _[carla.Actor](#carla.Actor)_  
 
 ---
 
 ## carla.ActorSnapshot<a name="carla.ActorSnapshot"></a> <sub><sup>_class_</sup></sub>
-A class containing all the information for an actor at a certain moment in time. These objects are contained in a [carla.WorldSnapshot](#carla.WorldSnapshot) and sent to the client once every tick.  
+A class that comprises all the information for an actor at a certain moment in time. These objects are contained in a [carla.WorldSnapshot](#carla.WorldSnapshot) and sent to the client once every tick.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.ActorSnapshot.id"></a>**<font color="#f8805a">id</font>** (_int_)  
 An identifier for the snapshot itself.  
 
 <h3>Methods</h3>
-- <a name="carla.ActorSnapshot.__self__"></a>**<font color="#7fb800">\__self__</font>**(<font color="#00a6ed">**self**</font>)  
 - <a name="carla.ActorSnapshot.get_acceleration"></a>**<font color="#7fb800">get_acceleration</font>**(<font color="#00a6ed">**self**</font>)  
 Returns the acceleration vector registered for an actor in that tick.  
     - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
@@ -220,7 +224,7 @@ Returns the velocity vector registered for an actor in that tick.
 ---
 
 ## carla.AttachmentType<a name="carla.AttachmentType"></a> <sub><sup>_class_</sup></sub>
-Class that defines attachment options between an actor and its parent. When spawning actors, these can be attached to another actor so their position accordingly. This is specially useful for cameras and sensors. [Here](../python_cookbook/#attach-sensors-recipe) is a brief recipe in which we can see how sensors can be attached to a car when spawned.  
+Class that defines attachment options between an actor and its parent. When spawning actors, these can be attached to another actor so their position changes accordingly. This is specially useful for cameras and sensors. [Here](../python_cookbook/#attach-sensors-recipe) is a brief recipe in which we can see how sensors can be attached to a car when spawned. Note that the attachment type is declared as an enum within the class.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.AttachmentType.Rigid"></a>**<font color="#f8805a">Rigid</font>**  
@@ -231,7 +235,9 @@ An attachment that expands or retracts depending on camera situation. SpringArms
 ---
 
 ## carla.BlueprintLibrary<a name="carla.BlueprintLibrary"></a> <sub><sup>_class_</sup></sub>
-A class that gives access to the blueprints provided for actor spawning and returns the [carla.Actorblueprint](#carla.Actorblueprint) that will be used for that. Each blueprint has an identifier and attributes that may or may not be modifiable depending on which. [Here](../bp_library/) is a reference containing every available blueprint and its specifics.  
+A class that gives access to the blueprints provided for actor spawning and returns the [carla.ActorBlueprint](#carla.ActorBlueprint) that will be used for that. Each blueprint has an identifier and attributes that may or may not be modifiable depending on which.The library is automatically created by the server and can be accessed through [carla.World](#carla.World).
+  
+  [Here](../bp_library/) is a reference containing every available blueprint and its specifics.  
 
 <h3>Methods</h3>
 - <a name="carla.BlueprintLibrary.__getitem__"></a>**<font color="#7fb800">\__getitem__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**pos**</font>)  
@@ -245,7 +251,7 @@ Method that allows iteration of this class.
 Returns the amount of blueprints comprising the library.  
     - **Return:** _int_  
 - <a name="carla.BlueprintLibrary.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
-Parses the identifiers for every blueprint and shows them on screen.  
+Parses the identifiers for every blueprint to string.  
     - **Return:** _string_  
 - <a name="carla.BlueprintLibrary.filter"></a>**<font color="#7fb800">filter</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**wildcard_pattern**</font>)  
 Filters a list of blueprints matching the `wildcard_pattern` against the id and tags of every blueprint contained in this library and returns the result as a new one. Matching follows [fnmatch](https://docs.python.org/2/library/fnmatch.html) standard.  
@@ -261,27 +267,32 @@ Returns the blueprint corresponding to that identifier.
 ---
 
 ## carla.BoundingBox<a name="carla.BoundingBox"></a> <sub><sup>_class_</sup></sub>
-Bounding box helper class.  
+Helper class defining a box location and its dimensions that will later be used by [carla.DebugHelper](#carla.DebugHelper) to draw shapes. Bounding boxes normally act for object colliders. Check out this [recipe](../python_cookbook/#debug-bounding-box-recipe) where the user takes a snapshot of the world and then proceeds to draw bounding boxes for traffic lights.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.BoundingBox.location"></a>**<font color="#f8805a">location</font>** (_[carla.Location](#carla.Location)_)  
 The center of the bounding box relative to its parent actor.  
 - <a name="carla.BoundingBox.extent"></a>**<font color="#f8805a">extent</font>** (_[carla.Vector3D](#carla.Vector3D)_)  
-It contains the vector from the center of the bounding box to one of the vertex of the box.  
-So, if you want to know the _X bounding box size_, you can just do `extent.x * 2`.  
+Vector from the center of the box to one vertex. The value in each axis equals half the size of the box for that axis. `extent.x * 2` would return the size of the box in the X-axis.  
 
 <h3>Methods</h3>
 - <a name="carla.BoundingBox.__init__"></a>**<font color="#7fb800">\__init__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**location**</font>, <font color="#00a6ed">**extent**</font>)  
     - **Parameters:**
-        - `location` (_[carla.Location](#carla.Location)_)  
-        - `extent` (_[carla.Vector3D](#carla.Vector3D)_)  
+        - `location` (_[carla.Location](#carla.Location)_) – Point to center the box.  
+        - `extent` (_[carla.Vector3D](#carla.Vector3D)_) – Vector containing half the size of the box for each axis.  
 - <a name="carla.BoundingBox.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns true if both location and extent are equal for this and `other`.  
     - **Parameters:**
         - `other` (_[carla.BoundingBox](#carla.BoundingBox)_)  
+    - **Return:** _bool_  
 - <a name="carla.BoundingBox.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Returns true if any location and extent are different for this and `other`.  
     - **Parameters:**
         - `other` (_[carla.BoundingBox](#carla.BoundingBox)_)  
+    - **Return:** _bool_  
 - <a name="carla.BoundingBox.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+Parses the location and extent of the bounding box to string.  
+    - **Return:** _str_  
 
 ---
 
@@ -447,56 +458,49 @@ Class that defines the color converter options. Check out this [`recipe`](../pyt
 ---
 
 ## carla.DebugHelper<a name="carla.DebugHelper"></a> <sub><sup>_class_</sup></sub>
-Class that provides drawing debug shapes. Check out this [`example`](https://github.com/carla-simulator/carla/blob/master/PythonAPI/util/lane_explorer.py).  
+Helper class part of [carla.World](#carla.World) that defines methods for creating debug shapes. By default, shapes last one second. They can be permanent, but take into account the resources needed to do so. Check out this [recipe](../python_cookbook/#debug-bounding-box-recipe) where the user takes a snapshot of the world and then proceeds to draw bounding boxes for traffic lights.  
 
 <h3>Methods</h3>
-- <a name="carla.DebugHelper.draw_point"></a>**<font color="#7fb800">draw_point</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**location**</font>, <font color="#00a6ed">**size**=0.1f</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0f</font>, <font color="#00a6ed">**persistent_lines**=True</font>)  
-Draws a point in the given location.  
+- <a name="carla.DebugHelper.draw_point"></a>**<font color="#7fb800">draw_point</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**location**</font>, <font color="#00a6ed">**size**=0.1f</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0f</font>)  
+Draws a point `location`.  
     - **Parameters:**
-        - `location` (_[carla.Location](#carla.Location)_)  
-        - `size` (_float_)  
-        - `color` (_[carla.Color](#carla.Color)_)  
-        - `life_time` (_float_)  
-        - `persistent_lines` (_bool_) – _Deprecated, use `life_time = 0` instead_.  
-- <a name="carla.DebugHelper.draw_line"></a>**<font color="#7fb800">draw_line</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**begin**</font>, <font color="#00a6ed">**end**</font>, <font color="#00a6ed">**thickness**=0.1f</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0f</font>, <font color="#00a6ed">**persistent_lines**=True</font>)  
-Draws a line between two given locations.  
+        - `location` (_[carla.Location](#carla.Location)_) – Spot in the coordinate system to center the object.  
+        - `size` (_float_) – Density of the point.  
+        - `color` (_[carla.Color](#carla.Color)_) – RGB code to color the object. Red by default.  
+        - `life_time` (_float_) – Lifespan in seconds for the shape. By default it only lasts one frame. Set this to 0 for permanent shapes.  
+- <a name="carla.DebugHelper.draw_line"></a>**<font color="#7fb800">draw_line</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**begin**</font>, <font color="#00a6ed">**end**</font>, <font color="#00a6ed">**thickness**=0.1f</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0f</font>)  
+Draws a line in between `begin` and `end`.  
     - **Parameters:**
-        - `begin` (_[carla.Location](#carla.Location)_)  
-        - `end` (_[carla.Location](#carla.Location)_)  
-        - `thickness` (_float_)  
-        - `color` (_[carla.Color](#carla.Color)_)  
-        - `life_time` (_float_)  
-        - `persistent_lines` (_bool_) – _Deprecated, use `life_time = 0` instead_.  
-- <a name="carla.DebugHelper.draw_arrow"></a>**<font color="#7fb800">draw_arrow</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**begin**</font>, <font color="#00a6ed">**end**</font>, <font color="#00a6ed">**thickness**=0.1f</font>, <font color="#00a6ed">**arrow_size**=0.1f</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0f</font>, <font color="#00a6ed">**persistent_lines**=True</font>)  
-Draws an arrow between two given locations.  
+        - `begin` (_[carla.Location](#carla.Location)_) – Point in the coordinate system where the line starts.  
+        - `end` (_[carla.Location](#carla.Location)_) – Spot in the coordinate system where the line ends.  
+        - `thickness` (_float_) – Density of the line.  
+        - `color` (_[carla.Color](#carla.Color)_) – RGB code to color the object. Red by default.  
+        - `life_time` (_float_) – Lifespan in seconds for the shape. By default it only lasts one frame. Set this to 0 for permanent shapes.  
+- <a name="carla.DebugHelper.draw_arrow"></a>**<font color="#7fb800">draw_arrow</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**begin**</font>, <font color="#00a6ed">**end**</font>, <font color="#00a6ed">**thickness**=0.1f</font>, <font color="#00a6ed">**arrow_size**=0.1f</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0f</font>)  
+Draws an arrow from `begin` to `end` pointing in that direction.  
     - **Parameters:**
-        - `begin` (_[carla.Location](#carla.Location)_)  
-        - `end` (_[carla.Location](#carla.Location)_)  
-        - `thickness` (_float_)  
-        - `arrow_size` (_float_)  
-        - `color` (_[carla.Color](#carla.Color)_)  
-        - `life_time` (_float_)  
-        - `persistent_lines` (_bool_) – _Deprecated, use `life_time = 0` instead_.  
-- <a name="carla.DebugHelper.draw_box"></a>**<font color="#7fb800">draw_box</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**box**</font>, <font color="#00a6ed">**rotation**</font>, <font color="#00a6ed">**thickness**=0.1f</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0f</font>, <font color="#00a6ed">**persistent_lines**=True</font>)  
-Draws the [carla.BoundingBox](#carla.BoundingBox) of a given bounding_box.<br> Check out this [`recipe`](../python_cookbook/#debug-bounding-box-recipe)!  
+        - `begin` (_[carla.Location](#carla.Location)_) – Point in the coordinate system where the arrow starts.  
+        - `end` (_[carla.Location](#carla.Location)_) – Point in the coordinate system where the arrow ends and points towards to.  
+        - `thickness` (_float_) – Density of the line.  
+        - `arrow_size` (_float_) – Size of the tip of the arrow.  
+        - `color` (_[carla.Color](#carla.Color)_) – RGB code to color the object. Red by default.  
+        - `life_time` (_float_) – Lifespan in seconds for the shape. By default it only lasts one frame. Set this to 0 for permanent shapes.  
+- <a name="carla.DebugHelper.draw_box"></a>**<font color="#7fb800">draw_box</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**box**</font>, <font color="#00a6ed">**rotation**</font>, <font color="#00a6ed">**thickness**=0.1f</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0f</font>)  
+Draws a box, ussually to act for object colliders.  
     - **Parameters:**
-        - `box` (_[carla.BoundingBox](#carla.BoundingBox)_)  
-        - `rotation` (_[carla.Rotation](#carla.Rotation)_)  
-        - `thickness` (_float_)  
-        - `color` (_[carla.Color](#carla.Color)_)  
-        - `life_time` (_float_)  
-        - `persistent_lines` (_bool_) – _Deprecated, use `life_time = 0` instead_.  
-- <a name="carla.DebugHelper.draw_string"></a>**<font color="#7fb800">draw_string</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**location**</font>, <font color="#00a6ed">**text**</font>, <font color="#00a6ed">**draw_shadow**=False</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0f</font>, <font color="#00a6ed">**persistent_lines**=True</font>)  
-Draws a string in a given location.  
+        - `box` (_[carla.BoundingBox](#carla.BoundingBox)_) – Object containing a location and the length of a box for every axis.  
+        - `rotation` (_[carla.Rotation](#carla.Rotation)_) – Orientation of the box according to Unreal Engine's axis system.  
+        - `thickness` (_float_) – Density of the lines that define the box.  
+        - `color` (_[carla.Color](#carla.Color)_) – RGB code to color the object. Red by default.  
+        - `life_time` (_float_) – Lifespan in seconds for the shape. By default it only lasts one frame. Set this to 0 for permanent shapes.  
+- <a name="carla.DebugHelper.draw_string"></a>**<font color="#7fb800">draw_string</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**location**</font>, <font color="#00a6ed">**text**</font>, <font color="#00a6ed">**draw_shadow**=False</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0f</font>)  
+Draws a string in a given location of the simulation which can only be seen server-side.  
     - **Parameters:**
-        - `location` (_[carla.Location](#carla.Location)_)  
-        - `text` (_str_)  
-        - `draw_shadow` (_bool_)  
-        - `color` (_[carla.Color](#carla.Color)_)  
+        - `location` (_[carla.Location](#carla.Location)_) – Spot in the simulation where the text will be centered.  
+        - `text` (_str_) – Text intended to be shown in the world.  
+        - `draw_shadow` (_bool_) – Casts a shadow for the string that could help in visualization. It is disabled by default.  
+        - `color` (_[carla.Color](#carla.Color)_) – RGB code to color the string. Red by default.  
         - `life_time` (_float_)  
-        - `persistent_lines` (_bool_) – _Deprecated, set a high `life_time` instead_.  
-    - **Note:** <font color="#8E8E8E">_Strings can only be seen on the server-side.
-_</font>  
 
 ---
 
@@ -1098,11 +1102,11 @@ A [carla.BoundingBox](#carla.BoundingBox) situated near a traffic sign where the
 ---
 
 ## carla.Transform<a name="carla.Transform"></a> <sub><sup>_class_</sup></sub>
-Class that defines a transformation without scaling. It is used to described an actor's position and rotation.  
+Class that defines a transformation, a combination of location and rotation, without scaling.  
 
 <h3>Instance Variables</h3>
 - <a name="carla.Transform.location"></a>**<font color="#f8805a">location</font>** (_[carla.Location](#carla.Location)_)  
-Describes a point in the map.  
+Describes a point in the coordinate system.  
 - <a name="carla.Transform.rotation"></a>**<font color="#f8805a">rotation</font>** (_[carla.Rotation](#carla.Rotation)_)  
 Describes a rotation for an object according to Unreal Engine's axis system.  
 
@@ -1117,7 +1121,7 @@ Returns true if both location and rotation are equal for this and `other`.
         - `other` (_[carla.Transform](#carla.Transform)_)  
     - **Return:** _bool_  
 - <a name="carla.Transform.__ne__"></a>**<font color="#7fb800">\__ne__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Returns true if both location and rotation are not equal for this and `other`.  
+Returns true if any location and rotation are not equal for this and `other`.  
     - **Parameters:**
         - `other` (_[carla.Transform](#carla.Transform)_)  
     - **Return:** _bool_  
@@ -1128,7 +1132,7 @@ Parses both location and rotation to string.
 Computes a forward vector using its rotation.  
     - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
 - <a name="carla.Transform.transform"></a>**<font color="#7fb800">transform</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**in_point**</font>)  
-Transform a 3D point using the current transformation.  
+Translates a 3D point from global to local coordinates using the current transformation as frame of reference.  
     - **Parameters:**
         - `in_point` (_[carla.Location](#carla.Location)_) – Location in the space to which the transformation will be applied.  
 
@@ -1149,25 +1153,21 @@ Y-axis value.
         - `x` (_float_)  
         - `y` (_float_)  
 - <a name="carla.Vector2D.__add__"></a>**<font color="#7fb800">\__add__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Returns the resulting vector from adding values for each axis.  
+Defines addition between 2D vectors and applies it to this.  
     - **Parameters:**
         - `other` (_[carla.Vector2D](#carla.Vector2D)_)  
-    - **Return:** _[carla.Vector2D](#carla.Vector2D)_  
 - <a name="carla.Vector2D.__sub__"></a>**<font color="#7fb800">\__sub__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Returns the resulting vector from substracting values for each axis.  
+Defines substraction between 2D vectors and applies it to this.  
     - **Parameters:**
         - `other` (_[carla.Vector2D](#carla.Vector2D)_)  
-    - **Return:** _[carla.Vector2D](#carla.Vector2D)_  
 - <a name="carla.Vector2D.__mul__"></a>**<font color="#7fb800">\__mul__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Returns the resulting vector from multiplying values for each axis.  
+Defines multiplication between 2D vectors and applies it to this.  
     - **Parameters:**
         - `other` (_[carla.Vector2D](#carla.Vector2D)_)  
-    - **Return:** _[carla.Vector2D](#carla.Vector2D)_  
 - <a name="carla.Vector2D.__truediv__"></a>**<font color="#7fb800">\__truediv__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Returns the resulting vector from dividing values for each axis.  
+Defines division between 2D vectors and applies it to this.  
     - **Parameters:**
         - `other` (_[carla.Vector2D](#carla.Vector2D)_)  
-    - **Return:** _[carla.Vector2D](#carla.Vector2D)_  
 - <a name="carla.Vector2D.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
 Returns true if values for every axis are equal.  
     - **Parameters:**
@@ -1202,25 +1202,21 @@ Z-axis value.
         - `y` (_float_)  
         - `z` (_float_)  
 - <a name="carla.Vector3D.__add__"></a>**<font color="#7fb800">\__add__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Returns the resulting vector from adding values for each axis.  
+Defines addition between 3D vectors and applies it to this.  
     - **Parameters:**
         - `other` (_[carla.Vector3D](#carla.Vector3D)_)  
-    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
-- <a name="carla.Vector3D.__mul__"></a>**<font color="#7fb800">\__mul__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Returns the resulting vector from adding values for each axis.  
-    - **Parameters:**
-        - `other` (_[carla.Vector3D](#carla.Vector3D)_)  
-    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
 - <a name="carla.Vector3D.__sub__"></a>**<font color="#7fb800">\__sub__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Returns the resulting vector from adding values for each axis.  
+Defines substraction between 3D vectors and applies it to this.  
     - **Parameters:**
         - `other` (_[carla.Vector3D](#carla.Vector3D)_)  
-    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
+- <a name="carla.Vector3D.__mul__"></a>**<font color="#7fb800">\__mul__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
+Defines multiplication between 3D vectors and applies it to this.  
+    - **Parameters:**
+        - `other` (_[carla.Vector3D](#carla.Vector3D)_)  
 - <a name="carla.Vector3D.__truediv__"></a>**<font color="#7fb800">\__truediv__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
-Returns the resulting vector from adding values for each axis.  
+Defines division between 3D vectors and applies it to this.  
     - **Parameters:**
         - `other` (_[carla.Vector3D](#carla.Vector3D)_)  
-    - **Return:** _[carla.Vector3D](#carla.Vector3D)_  
 - <a name="carla.Vector3D.__eq__"></a>**<font color="#7fb800">\__eq__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**other**</font>)  
 Returns true if values for every axis are equal.  
     - **Parameters:**
@@ -1233,6 +1229,7 @@ Returns true if the value for any axis is different.
     - **Return:** _bool_  
 - <a name="carla.Vector3D.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
 Returns the axis values for the vector parsed as string.  
+    - **Return:** _str_  
 
 ---
 
@@ -1626,7 +1623,7 @@ World objects are created by the client to have a place for the simulation to ha
 - <a name="carla.World.id"></a>**<font color="#f8805a">id</font>** (_int_)  
 The ID of the episode associated with this world. Episodes are different sessions of a simulation. These change everytime a world is disabled or reloaded. Keeping track is useful to avoid possible issues.  
 - <a name="carla.World.debug"></a>**<font color="#f8805a">debug</font>** (_[carla.DebugHelper](#carla.DebugHelper)_)  
-This object will help us creating different shapes for debugging. Take a look at its class to learn more about it.  
+Responsible for creating different shapes for debugging. Take a look at its class to learn more about it.  
 
 <h3>Methods</h3>
 - <a name="carla.World.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  

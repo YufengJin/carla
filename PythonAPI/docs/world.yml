@@ -59,41 +59,47 @@
   - class_name: ActorList
     # - DESCRIPTION ------------------------
     doc: >
-      A class that contains every actor present on the scene and provides acces to them.
+      A class that contains every actor present on the scene and provides access to them. The list is automatically created and updated by the server and it can be returned using carla.World. 
     # - METHODS ----------------------------
     methods:
-    - def_name: find
-      params:
-      - param_name: actor_id
-        type: int
-      doc: >
-        Finds an actor using its identifier and returns it or <b>None</b> if it is not present. 
-    # --------------------------------------
-    - def_name: filter
-      params:
-      - param_name: wildcard_pattern
-        type: str
-      doc: >
-        Filters a list of Actors matching `wildcard_pattern` against their variable **<font color="#f8805a">type_id</font>** (which identifies the blueprint used to spawn them). Matching follows [fnmatch](https://docs.python.org/2/library/fnmatch.html) standard.  
-    # --------------------------------------
     - def_name: __getitem__
+      return: carla.Actor
       params:
       - param_name: pos
         type: int
       doc: >
         Returns the actor corresponding to `pos` position in the list. 
     # --------------------------------------
-    - def_name: __len__
-      doc: >
-        Returns the amount of actors listed. 
-    # --------------------------------------
     - def_name: __iter__
       doc: >
         Allows the iteration for this object. 
     # --------------------------------------
-    - def_name: __str__
+    - def_name: __len__
+      return: int
       doc: >
-        Parses the information comprised for every actor and shows it on screen. 
+        Returns the amount of actors listed. 
+    # --------------------------------------
+    - def_name: __str__
+      return: str
+      doc: >
+        Parses to the ID for every actor listed.  
+    # --------------------------------------
+
+    - def_name: filter
+      return: list
+      params:
+      - param_name: wildcard_pattern
+        type: str
+      doc: >
+        Filters a list of Actors matching `wildcard_pattern` against their variable **<font color="#f8805a">type_id</font>** (which identifies the blueprint used to spawn them). Matching follows [fnmatch](https://docs.python.org/2/library/fnmatch.html) standard.  
+    # --------------------------------------
+    - def_name: find
+      return: carla.Actor
+      params:
+      - param_name: actor_id
+        type: int
+      doc: >
+        Finds an actor using its identifier and returns it or <b>None</b> if it is not present. 
     # --------------------------------------
 
   - class_name: WorldSettings
@@ -165,7 +171,7 @@
   - class_name: AttachmentType
     # - DESCRIPTION ------------------------
     doc: >
-      Class that defines attachment options between an actor and its parent. When spawning actors, these can be attached to another actor so their position accordingly. This is specially useful for cameras and sensors. [Here](../python_cookbook/#attach-sensors-recipe) is a brief recipe in which we can see how sensors can be attached to a car when spawned.
+      Class that defines attachment options between an actor and its parent. When spawning actors, these can be attached to another actor so their position changes accordingly. This is specially useful for cameras and sensors. [Here](../python_cookbook/#attach-sensors-recipe) is a brief recipe in which we can see how sensors can be attached to a car when spawned. Note that the attachment type is declared as an enum within the class. 
       
     # - PROPERTIES -------------------------
     instance_variables:
@@ -190,7 +196,7 @@
     - var_name: debug
       type: carla.DebugHelper
       doc: >
-        This object will help us creating different shapes for debugging. Take a look at its class to learn more about it. 
+        Responsible for creating different shapes for debugging. Take a look at its class to learn more about it. 
     # - METHODS ----------------------------
     methods:    
     - def_name: __str__
@@ -356,129 +362,148 @@
   - class_name: DebugHelper
     # - DESCRIPTION ------------------------
     doc: >
-      Class that provides drawing debug shapes.
-      Check out this [`example`](https://github.com/carla-simulator/carla/blob/master/PythonAPI/util/lane_explorer.py)
+      Helper class part of carla.World that defines methods for creating debug shapes. By default, shapes last one second. They can be permanent, but take into account the resources needed to do so. Check out this [recipe](../python_cookbook/#debug-bounding-box-recipe) where the user takes a snapshot of the world and then proceeds to draw bounding boxes for traffic lights.
     # - METHODS ----------------------------
     methods:
     - def_name: draw_point
       params: 
       - param_name: location
         type: carla.Location
+        doc: >
+          Spot in the coordinate system to center the object. 
       - param_name: size
         type: float
         default: 0.1f
+        doc: >
+          Density of the point.  
       - param_name: color
         type: carla.Color
         default: (255,0,0)
+        doc: >
+          RGB code to color the object. Red by default. 
       - param_name: life_time
         type: float
         default: -1.0f
-      - param_name: persistent_lines
-        type: bool
-        default: True
         doc: >
-          _Deprecated, use `life_time = 0` instead_
+          Lifespan in seconds for the shape. By default it only lasts one frame. Set this to 0 for permanent shapes. 
       doc: >
-        Draws a point in the given location.
+        Draws a point `location`.
     # --------------------------------------
     - def_name: draw_line
       params:
       - param_name: begin
         type: carla.Location
+        doc: >
+          Point in the coordinate system where the line starts. 
       - param_name: end
         type: carla.Location
+        doc: >
+          Spot in the coordinate system where the line ends. 
       - param_name: thickness
         type: float
         default: 0.1f
+        doc: >
+          Density of the line.  
       - param_name: color
         type: carla.Color
         default: (255,0,0)
+        doc: >
+          RGB code to color the object. Red by default.
       - param_name: life_time
         type: float
         default: -1.0f
-      - param_name: persistent_lines
-        type: bool
-        default: True
         doc: >
-          _Deprecated, use `life_time = 0` instead_
+          Lifespan in seconds for the shape. By default it only lasts one frame. Set this to 0 for permanent shapes. 
       doc: >
-        Draws a line between two given locations.
+        Draws a line in between `begin` and `end`.
     # --------------------------------------
     - def_name: draw_arrow
       params:
       - param_name: begin
         type: carla.Location
+        doc: >
+          Point in the coordinate system where the arrow starts. 
       - param_name: end
         type: carla.Location
+        doc: >
+          Point in the coordinate system where the arrow ends and points towards to. 
       - param_name: thickness
         type: float
         default: 0.1f
+        doc: >
+          Density of the line.  
       - param_name: arrow_size
         type: float
         default: 0.1f
+        doc: >
+          Size of the tip of the arrow. 
       - param_name: color
         type: carla.Color
         default: (255,0,0)
+        doc: >
+          RGB code to color the object. Red by default. 
       - param_name: life_time
         type: float
         default: -1.0f
-      - param_name: persistent_lines
-        type: bool
-        default: True
         doc: >
-          _Deprecated, use `life_time = 0` instead_
+          Lifespan in seconds for the shape. By default it only lasts one frame. Set this to 0 for permanent shapes. 
       doc: >
-        Draws an arrow between two given locations.
+        Draws an arrow from `begin` to `end` pointing in that direction.
 
     # --------------------------------------
     - def_name: draw_box
       params:
       - param_name: box
         type: carla.BoundingBox
+        doc: >
+          Object containing a location and the length of a box for every axis. 
       - param_name: rotation
         type: carla.Rotation
+        doc: >
+          Orientation of the box according to Unreal Engine's axis system. 
       - param_name: thickness
         type: float
         default: 0.1f
+        doc: >
+          Density of the lines that define the box. 
       - param_name: color
         type: carla.Color
         default: (255,0,0)
+        doc: >
+          RGB code to color the object. Red by default. 
       - param_name: life_time
         type: float
         default: -1.0f
-      - param_name: persistent_lines
-        type: bool
-        default: True
         doc: >
-          _Deprecated, use `life_time = 0` instead_
+          Lifespan in seconds for the shape. By default it only lasts one frame. Set this to 0 for permanent shapes. 
       doc: >
-        Draws the carla.BoundingBox of a given bounding_box.<br>
-        Check out this [`recipe`](../python_cookbook/#debug-bounding-box-recipe)!
+        Draws a box, ussually to act for object colliders. 
         
     # --------------------------------------
     - def_name: draw_string
       params: 
       - param_name: location
         type: carla.Location
+        doc: >
+          Spot in the simulation where the text will be centered. 
       - param_name: text
         type: str
+        doc: >
+          Text intended to be shown in the world. 
       - param_name: draw_shadow
         type: bool
         default: False
+        doc: >
+          Casts a shadow for the string that could help in visualization. It is disabled by default.
       - param_name: color
         type: carla.Color
         default: (255,0,0)
+        doc: >
+          RGB code to color the string. Red by default. 
       - param_name: life_time
         type: float
         default: -1.0f
-      - param_name: persistent_lines
-        type: bool
-        default: true
-        doc: >
-          _Deprecated, set a high `life_time` instead_
       doc: >
-        Draws a string in a given location.
-      note: >
-        Strings can only be seen on the server-side.
+        Draws a string in a given location of the simulation which can only be seen server-side.
     # --------------------------------------
 ...
